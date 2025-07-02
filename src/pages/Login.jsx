@@ -1,6 +1,7 @@
 import React from "react";
 import { Form, Input, Button } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
 import "./../styles/login.css";
 import logoNusaKoko from "../assets/logo-nusakoko.png"; // import logo
 
@@ -62,7 +63,7 @@ const Login = () => {
             </Form.Item>
             <div className="login-register">
               <span>I Don't Have Account?</span>
-              <a href="#">Register</a>
+              <Link to="/register">Register</Link>
             </div>
           </Form>
         </div>
