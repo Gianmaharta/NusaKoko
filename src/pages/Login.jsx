@@ -1,11 +1,37 @@
-import React from "react";
-import { Form, Input, Button } from "antd";
+import React, { useState } from "react";
+import { Form, Input, Button, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./../styles/login.css";
-import logoNusaKoko from "../assets/logo-nusakoko.png"; // import logo
+import logoNusaKoko from "../assets/logo-nusakoko.png";
+import api from "../utils/api";
 
 const Login = () => {
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const onFinish = async (values) => {
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append("username", values.username);
+      formData.append("password", values.password);
+
+      const res = await api.post("/api/nusakoko/auth/login", formData);
+      // Simpan JWT ke localStorage
+      localStorage.setItem("token", res.data.access_token);
+      message.success("Login berhasil!");
+      // Redirect ke dashboard/halaman utama
+      navigate("/dashboard");
+    } catch (err) {
+      message.error(
+        err.response?.data?.msg || "Login gagal, cek username/password!"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="login-container">
       {/* Left Side */}
@@ -24,6 +50,7 @@ const Login = () => {
             name="login"
             className="login-form"
             initialValues={{ remember: true }}
+            onFinish={onFinish}
           >
             <Form.Item
               name="username"
@@ -57,6 +84,7 @@ const Login = () => {
                 className="login-btn"
                 size="large"
                 block
+                loading={loading}
               >
                 LOGIN
               </Button>

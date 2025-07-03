@@ -87,7 +87,8 @@ body, #root {
   border-radius: 28px !important;
   height: 48px;
   font-size: 1.1rem;
-  margin-bottom: 16px;
+  margin-bottom: 0px;
+  margin-top: 16px;
 }
 
 .login-input input {
@@ -105,7 +106,7 @@ body, #root {
   font-size: 1.2rem;
   font-weight: bold;
   border: none;
-  margin-top: 8px;
+  margin-top: 16px;
 }
 
 .login-btn:hover, .login-btn:focus {
@@ -139,6 +140,18 @@ body, #root {
   color: #5C4033;
   font-weight: bold;
   text-decoration: none;
+}
+
+/* Atur margin error message agar lebih rapat ke input */
+.ant-form-item-explain-error {
+  margin-top: 0px !important;
+  margin-bottom: 0 !important;
+  margin-left: 32px !important;
+  font-size: 1rem;
+}
+
+.ant-form-item {
+  margin-bottom: 8px !important; /* atau 4px jika ingin lebih rapat */
 }
 
 /* RESPONSIVE */

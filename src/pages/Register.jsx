@@ -1,16 +1,36 @@
-import React from "react";
-import { Form, Input, Button } from "antd";
+import React, { useState } from "react";
+import { Form, Input, Button, message } from "antd";
 import { UserOutlined, LockOutlined, MailOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./../styles/login.css";
 import logoNusaKoko from "../assets/logo-nusakoko.png";
+import api from "../utils/api";
 
 const Register = () => {
   const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const onFinish = (values) => {
-    // Proses registrasi di sini
-    console.log("Register Success:", values);
+  const onFinish = async (values) => {
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append("username", values.username);
+      formData.append("email", values.email);
+      formData.append("password", values.password);
+
+      await api.post("/api/nusakoko/auth/register", formData);
+      message.success("Registrasi berhasil! Silakan login.");
+      navigate("/login");
+    } catch (err) {
+      message.error(
+        err.response?.data?.msg ||
+          err.response?.data?.message ||
+          "Registrasi gagal, cek data Anda!"
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   const validatePassword = (_, value) => {
@@ -34,7 +54,9 @@ const Register = () => {
           <div className="login-avatar">
             <UserOutlined style={{ fontSize: 64, color: "#fff" }} />
           </div>
-          <h2 style={{ textAlign: "center", color: "#4B2E19", marginBottom: 24 }}>Daftar Akun Baru</h2>
+          <h2 style={{ textAlign: "center", color: "#4B2E19", marginBottom: 24 }}>
+            Daftar Akun Baru
+          </h2>
           <Form
             form={form}
             name="register"
@@ -101,6 +123,7 @@ const Register = () => {
                 className="login-btn"
                 size="large"
                 block
+                loading={loading}
               >
                 REGISTER
               </Button>
@@ -116,4 +139,4 @@ const Register = () => {
   );
 };
 
-export default Register; 
+export default Register;
