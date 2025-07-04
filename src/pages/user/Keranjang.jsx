@@ -22,27 +22,33 @@ export default function Keranjang() {
       setCart([
         {
           id: 4,
+          name: "Kantong Plastik",
           title: "Kantong Plastik",
-          price: "10.000",
+          price: 10000,
           image: bagImage,
           qty: 1,
           checked: true,
+          stock: 10,
         },
         {
           id: 5,
+          name: "Plastik Makanan",
           title: "Plastik Makanan",
-          price: "8.000",
+          price: 8000,
           image: foodPlasticImage,
           qty: 1,
           checked: false,
+          stock: 10,
         },
         {
           id: 6,
+          name: "Mangkok Plastik",
           title: "Mangkok Plastik",
-          price: "15.000",
+          price: 15000,
           image: bowlImage,
           qty: 1,
           checked: false,
+          stock: 10,
         },
       ]);
     }
