@@ -1,9 +1,9 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate, Link } from "react-router-dom";
-import { FloatButton } from 'antd';
-import Login from "./pages/Login";
-import Register from "./pages/Register";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Home from "./pages/user/Home";
+import Produk from "./pages/Produk";
+import PrivateRoute from "./components/PrivateRoute";
+import Register from "./pages/Register";
 import "antd/dist/reset.css";
 
 function App() {
@@ -11,16 +11,19 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="*" element={<Navigate to="/login" />} />
+        <Route
+          path="/produk"
+          element={
+            <PrivateRoute>
+              <Produk />
+            </PrivateRoute>
+          }
+        />
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>
   );
 }
 
 export default App;
-
-// Test asoka1
-// Test asoka2
-// Test asoka3

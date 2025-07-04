@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './Home.css';
-import { Layout, Typography, FloatButton, Row, Col } from 'antd';
+import { Layout, Typography, FloatButton, Row, Col, Modal } from 'antd';
+import { useNavigate } from "react-router-dom";
 
 import Navbar from '../../components/user/Navbar';
 import Footer from '../../components/user/Footer';
@@ -9,6 +10,7 @@ import ProductCardHorizontal from '../../components/user/ProductCardHorizontal';
 import ProductCard from '../../components/user/Product/ProductCard'; // komponen produk vertikal
 import ProductList from '../../components/user/Product/ProductList';
 import AboutSection from '../../components/user/AboutSection/AboutSection';
+import Login from '../Login'; // Pastikan path sesuai struktur folder Anda
 
 
 import dashboardImage from '../../assets/dashboard-image.png';
@@ -99,6 +101,26 @@ const dummyProducts = [
 
 const Home = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [loginModalVisible, setLoginModalVisible] = useState(false);
+  const navigate = useNavigate();
+
+  const handleViewAllClick = () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/produk");
+    } else {
+      setLoginModalVisible(true);
+    }
+  };
+
+  const handleLoginModalClose = () => {
+    setLoginModalVisible(false);
+  };
+
+  const handleLoginSuccess = () => {
+    setLoginModalVisible(false);
+    navigate("/produk");
+  };
 
   return (
     <>
@@ -163,7 +185,7 @@ const Home = () => {
               <section id="pembelian" className="section-container-pembelian section-scroll-margin">
                 <Title level={2} className="section-title">Produk NusaKoko</Title>
 
-                <ProductList products={dummyProducts} />
+                <ProductList products={dummyProducts.slice(0, 4)} />
 
                 <div style={{ textAlign: 'center', marginTop: '24px' }}>
                   <button
@@ -176,6 +198,7 @@ const Home = () => {
                       cursor: 'pointer',
                       fontSize: '16px',
                     }}
+                    onClick={handleViewAllClick}
                   >
                     View All →
                   </button>
@@ -203,6 +226,19 @@ const Home = () => {
 
         <Footer />
       </Layout>
+
+      {/* Modal Login */}
+      <Modal
+        open={loginModalVisible}
+        onCancel={handleLoginModalClose}
+        footer={null}
+        centered
+        width={480}
+        bodyStyle={{ padding: 0, borderRadius: 28 }}
+        destroyOnClose
+      >
+        <Login isModal onSuccess={handleLoginSuccess} />
+      </Modal>
     </>
   );
 };

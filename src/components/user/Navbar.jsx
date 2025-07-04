@@ -1,12 +1,12 @@
-import React from 'react';
-import { Input, Menu } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Input, Menu, Button } from 'antd';
 import {
   UserOutlined,
   ShoppingCartOutlined,
   SearchOutlined,
 } from '@ant-design/icons';
 import logo from '../../assets/logo-nusakoko.png';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Navbar.css';
 
 
@@ -19,6 +19,23 @@ const scrollToSection = (id) => {
 
 
 const Navbar = ({ onSearch }) => {
+  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    setIsLoggedIn(!!localStorage.getItem("token"));
+    // Optional: listen to storage event for multi-tab logout
+    const handleStorage = () => setIsLoggedIn(!!localStorage.getItem("token"));
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+    navigate("/");
+  };
+
   const menuItems = [
     {
       key: '1',
@@ -178,6 +195,9 @@ const Navbar = ({ onSearch }) => {
         >
           <ShoppingCartOutlined />
         </div>
+        {isLoggedIn && (
+          <Button onClick={handleLogout}>Logout</Button>
+        )}
       </div>
     </div>
   );

@@ -6,7 +6,8 @@ import "./../styles/login.css";
 import logoNusaKoko from "../assets/logo-nusakoko.png";
 import api from "../utils/api";
 
-const Login = () => {
+// Tambahkan prop isModal
+const Login = ({ isModal, onSuccess }) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -21,8 +22,11 @@ const Login = () => {
       // Simpan JWT ke localStorage
       localStorage.setItem("token", res.data.access_token);
       message.success("Login berhasil!");
-      // Redirect ke dashboard/halaman utama
-      navigate("/dashboard");
+      if (onSuccess) {
+        onSuccess(); // Tutup modal dari Home.jsx
+      } else {
+        navigate("/dashboard"); // fallback jika bukan modal
+      }
     } catch (err) {
       message.error(
         err.response?.data?.msg || "Login gagal, cek username/password!"
@@ -32,7 +36,63 @@ const Login = () => {
     }
   };
 
-  return (
+  return isModal ? (
+    <div className="login-right">
+      <div className="login-card">
+        <div className="login-avatar">
+          <UserOutlined style={{ fontSize: 64, color: "#fff" }} />
+        </div>
+        <Form
+          name="login"
+          className="login-form"
+          initialValues={{ remember: true }}
+          onFinish={onFinish}
+        >
+          <Form.Item
+            name="username"
+            rules={[{ required: true, message: "Please input your Username!" }]}
+          >
+            <Input
+              prefix={<UserOutlined />}
+              placeholder="Username"
+              className="login-input"
+              size="large"
+            />
+          </Form.Item>
+          <Form.Item
+            name="password"
+            rules={[{ required: true, message: "Please input your Password!" }]}
+          >
+            <Input.Password
+              prefix={<LockOutlined />}
+              placeholder="Password"
+              className="login-input"
+              size="large"
+            />
+          </Form.Item>
+          <div className="login-forgot">
+            <a href="#">Forgot password?</a>
+          </div>
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              className="login-btn"
+              size="large"
+              block
+              loading={loading}
+            >
+              LOGIN
+            </Button>
+          </Form.Item>
+          <div className="login-register">
+            <span>I Don't Have Account?</span>
+            <Link to="/register">Register</Link>
+          </div>
+        </Form>
+      </div>
+    </div>
+  ) : (
     <div className="login-container">
       {/* Left Side */}
       <div className="login-left">
