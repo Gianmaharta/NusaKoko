@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './Home.css';
-import { Layout, Typography, FloatButton, Row, Col, Modal } from 'antd';
+import { Layout, Typography, FloatButton, Row, Col, Modal, message, notification } from 'antd';
 import { useNavigate } from "react-router-dom";
 
 import Navbar from '../../components/user/Navbar';
@@ -102,28 +102,47 @@ const dummyProducts = [
 const Home = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [loginModalVisible, setLoginModalVisible] = useState(false);
+  const [api, contextHolder] = notification.useNotification();
   const navigate = useNavigate();
 
-  const handleViewAllClick = () => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      navigate("/produk");
-    } else {
-      setLoginModalVisible(true);
-    }
-  };
+
+const handleViewAllClick = () => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    navigate("/produk");
+  } else {
+    setLoginModalVisible(true);
+  }
+};
 
   const handleLoginModalClose = () => {
     setLoginModalVisible(false);
   };
 
-  const handleLoginSuccess = () => {
+  const handleLoginSuccess = (role) => {
+    // 1. Tutup modal login
     setLoginModalVisible(false);
-    navigate("/produk");
+    // 2. Siapkan "paket" notifikasi yang akan dikirim
+    const notificationState = {
+      state: {
+        notification: {
+          type: 'success',
+          message: 'Login Berhasil!',
+          description: 'Selamat datang kembali.',
+        }
+      }
+    };
+    // 3. Lakukan navigasi ke halaman yang sesuai SAMBIL MENGIRIM state
+    if (role === "admin") {
+      navigate("/admin", notificationState);
+    } else {
+      navigate("/produk", notificationState);
+    }
   };
 
   return (
     <>
+      {contextHolder}
       {/* Tombol Scroll ke Atas */}
       <FloatButton.BackTop
         visibilityHeight={300}
@@ -136,7 +155,7 @@ const Home = () => {
       />
 
       <Layout style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-        <Navbar onSearch={setSearchQuery} />
+        <Navbar onSearch={setSearchQuery} onShowLoginModal={() => setLoginModalVisible(true)} />
 
         <Content style={{ padding: 0, backgroundColor: '#4E342E' }}>
           {/* Banner */}

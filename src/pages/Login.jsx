@@ -10,6 +10,7 @@ import api from "../utils/api";
 const Login = ({ isModal, onSuccess }) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  
 
   const onFinish = async (values) => {
     setLoading(true);
@@ -19,13 +20,17 @@ const Login = ({ isModal, onSuccess }) => {
       formData.append("password", values.password);
 
       const res = await api.post("/api/nusakoko/auth/login", formData);
-      // Simpan JWT ke localStorage
       localStorage.setItem("token", res.data.access_token);
-      message.success("Login berhasil!");
+      localStorage.setItem("role", res.data.role); // Simpan role
       if (onSuccess) {
-        onSuccess(); // Tutup modal dari Home.jsx
+        onSuccess(res.data.role); // Kirim role ke handler
       } else {
-        navigate("/dashboard"); // fallback jika bukan modal
+        // Redirect sesuai role
+        if (res.data.role === "admin") {
+          navigate("/admin");
+        } else {
+          navigate("/produk");
+        }
       }
     } catch (err) {
       message.error(
