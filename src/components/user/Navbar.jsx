@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Input, Menu, Button } from 'antd';
 import {
   UserOutlined,
@@ -20,12 +20,20 @@ const scrollToSection = (id) => {
 
 const Navbar = ({ onSearch }) => {
   const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    setIsLoggedIn(!!localStorage.getItem("token"));
+    // Optional: listen to storage event for multi-tab logout
+    const handleStorage = () => setIsLoggedIn(!!localStorage.getItem("token"));
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    // Redirect ke halaman utama/login
+    setIsLoggedIn(false);
     navigate("/");
-    // Jika perlu, bisa juga set state user ke null
   };
 
   const menuItems = [
@@ -187,7 +195,9 @@ const Navbar = ({ onSearch }) => {
         >
           <ShoppingCartOutlined />
         </div>
-        <Button onClick={handleLogout}>Logout</Button>
+        {isLoggedIn && (
+          <Button onClick={handleLogout}>Logout</Button>
+        )}
       </div>
     </div>
   );
