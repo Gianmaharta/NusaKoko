@@ -18,7 +18,7 @@ const scrollToSection = (id) => {
 };
 
 
-const Navbar = ({ onSearch }) => {
+const Navbar = ({ onSearch, onShowLoginModal }) => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -176,6 +176,7 @@ const Navbar = ({ onSearch }) => {
             fontSize: 18,
             cursor: 'pointer',
           }}
+          onClick={onShowLoginModal} // Tambahkan ini
         >
           <UserOutlined />
         </div>
