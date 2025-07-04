@@ -18,19 +18,7 @@ const allProducts = [
   { id: 1, title: "Kantong Plastik", price: "10.000", image: bagImage },
   { id: 2, title: "Plastik Makanan", price: "8.000", image: foodPlasticImage },
   { id: 3, title: "Mangkok Plastik", price: "15.000", image: bowlImage },
-<<<<<<< HEAD
-  { id: 4, title: "Kantong Plastik", price: "10.000", image: bagImage },
-  { id: 5, title: "Plastik Makanan", price: "8.000", image: foodPlasticImage },
-  { id: 6, title: "Mangkok Plastik", price: "15.000", image: bowlImage },
-  { id: 7, title: "Kantong Plastik", price: "10.000", image: bagImage },
-  { id: 8, title: "Plastik Makanan", price: "8.000", image: foodPlasticImage },
-  { id: 9, title: "Mangkok Plastik", price: "15.000", image: bowlImage },
-  // ...tambahkan produk lain sesuai kebutuhan
-=======
-  { id: 4, title: "Kantong Plastik Lain", price: "10.000", image: bagImage },
-  { id: 5, title: "Plastik Makanan Lain", price: "8.000", image: foodPlasticImage },
-  { id: 6, title: "Mangkok Plastik Lain", price: "15.000", image: bowlImage },
->>>>>>> cde0233c0276553f7d2e7382b93d2bf430a186b4
+
 ];
 
 const Produk = () => {

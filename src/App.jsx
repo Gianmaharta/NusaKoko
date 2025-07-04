@@ -4,20 +4,20 @@ import Home from "./pages/user/Home";
 import Produk from "./pages/Produk";
 import PrivateRoute from "./components/PrivateRoute";
 import Register from "./pages/Register";
-<<<<<<< HEAD
+
 import Keranjang from "./pages/user/Keranjang";
 import Checkout from "./pages/user/Checkout";
-=======
+
 import Login from "./pages/Login";
 import AdminDashboard from "./pages/admin/HomeAdmin";
 import UserDashboard from "./pages/user/Home";
->>>>>>> cde0233c0276553f7d2e7382b93d2bf430a186b4
+ 
 import "antd/dist/reset.css";
 import { CartProvider } from "./context/CartContext";
 
 function App() {
   return (
-<<<<<<< HEAD
+
     <CartProvider>
       <Router>
         <Routes>
@@ -51,40 +51,8 @@ function App() {
         </Routes>
       </Router>
     </CartProvider>
-=======
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route
-          path="/admin"
-          element={
-            <PrivateRoute allowedRoles={["admin"]}>
-              <AdminDashboard />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/dashboard"
-          element={
-            <PrivateRoute allowedRoles={["user", "admin"]}>
-              <UserDashboard />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/produk"
-          element={
-            <PrivateRoute>
-              <Produk />
-            </PrivateRoute>
-          }
-        />
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
-    </Router>
->>>>>>> cde0233c0276553f7d2e7382b93d2bf430a186b4
+
+
   );
 }
 
