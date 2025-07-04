@@ -105,7 +105,12 @@ const Home = () => {
   const navigate = useNavigate();
 
   const handleViewAllClick = () => {
-    setLoginModalVisible(true);
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/produk");
+    } else {
+      setLoginModalVisible(true);
+    }
   };
 
   const handleLoginModalClose = () => {
