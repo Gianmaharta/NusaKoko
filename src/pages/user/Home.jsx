@@ -25,78 +25,18 @@ const { Content } = Layout;
 const { Title, Paragraph } = Typography;
 
 const dummyProducts = [
-  {
-    id: 1,
-    title: 'Kantong Plastik',
-    price: '10.000',
-    image: bagImage,
-  },
-  {
-    id: 2,
-    title: 'Plastik Makanan',
-    price: '8.000',
-    image: foodPlasticImage,
-  },
-  {
-    id: 3,
-    title: 'Mangkok Plastik',
-    price: '15.000',
-    image: bowlImage,
-  },
-  {
-    id: 1,
-    title: 'Kantong Plastik',
-    price: '10.000',
-    image: bagImage,
-  },
-  {
-    id: 2,
-    title: 'Plastik Makanan',
-    price: '8.000',
-    image: foodPlasticImage,
-  },
-  {
-    id: 3,
-    title: 'Mangkok Plastik',
-    price: '15.000',
-    image: bowlImage,
-  },
-  {
-    id: 1,
-    title: 'Kantong Plastik',
-    price: '10.000',
-    image: bagImage,
-  },
-  {
-    id: 2,
-    title: 'Plastik Makanan',
-    price: '8.000',
-    image: foodPlasticImage,
-  },
-  {
-    id: 3,
-    title: 'Mangkok Plastik',
-    price: '15.000',
-    image: bowlImage,
-  },
-  {
-    id: 1,
-    title: 'Kantong Plastik',
-    price: '10.000',
-    image: bagImage,
-  },
-  {
-    id: 2,
-    title: 'Plastik Makanan',
-    price: '8.000',
-    image: foodPlasticImage,
-  },
-  {
-    id: 3,
-    title: 'Mangkok Plastik',
-    price: '15.000',
-    image: bowlImage,
-  },
+  { id: 1, title: 'Kantong Plastik', price: '10.000', image: bagImage },
+  { id: 2, title: 'Plastik Makanan', price: '8.000', image: foodPlasticImage },
+  { id: 3, title: 'Mangkok Plastik', price: '15.000', image: bowlImage },
+  { id: 4, title: 'Kantong Plastik', price: '10.000', image: bagImage },
+  { id: 5, title: 'Plastik Makanan', price: '8.000', image: foodPlasticImage },
+  { id: 6, title: 'Mangkok Plastik', price: '15.000', image: bowlImage },
+  { id: 7, title: 'Kantong Plastik', price: '10.000', image: bagImage },
+  { id: 8, title: 'Plastik Makanan', price: '8.000', image: foodPlasticImage },
+  { id: 9, title: 'Mangkok Plastik', price: '15.000', image: bowlImage },
+  { id: 10, title: 'Kantong Plastik', price: '10.000', image: bagImage },
+  { id: 11, title: 'Plastik Makanan', price: '8.000', image: foodPlasticImage },
+  { id: 12, title: 'Mangkok Plastik', price: '15.000', image: bowlImage },
 ];
 
 const Home = () => {
@@ -167,16 +107,6 @@ const Home = () => {
                   title="Mangkok Serabut Kelapa NusaKoko"
                   description="Mangkok Serabut Kelapa dari NusaKoko adalah jawaban kami untuk kebutuhan wadah makanan yang tidak hanya praktis, tetapi juga berkontribusi bagi kelestarian bumi. Terbuat dari campuran bioplastik dan serabut kelapa alami, mangkok ini hadir dengan desain modern, kuat, dan tentu saja ramah lingkungan."
                 />
-                <ProductCardHorizontal
-                  imageSrc={mangkokImage}
-                  title="Mangkok Serabut Kelapa NusaKoko"
-                  description="Mangkok Serabut Kelapa dari NusaKoko adalah jawaban kami untuk kebutuhan wadah makanan yang tidak hanya praktis, tetapi juga berkontribusi bagi kelestarian bumi. Terbuat dari campuran bioplastik dan serabut kelapa alami, mangkok ini hadir dengan desain modern, kuat, dan tentu saja ramah lingkungan."
-                />
-                <ProductCardHorizontal
-                  imageSrc={mangkokImage}
-                  title="Mangkok Serabut Kelapa NusaKoko"
-                  description="Mangkok Serabut Kelapa dari NusaKoko adalah jawaban kami untuk kebutuhan wadah makanan yang tidak hanya praktis, tetapi juga berkontribusi bagi kelestarian bumi. Terbuat dari campuran bioplastik dan serabut kelapa alami, mangkok ini hadir dengan desain modern, kuat, dan tentu saja ramah lingkungan."
-                />
               </section>
             </div>
 
@@ -185,7 +115,7 @@ const Home = () => {
               <section id="pembelian" className="section-container-pembelian section-scroll-margin">
                 <Title level={2} className="section-title">Produk NusaKoko</Title>
 
-                <ProductList products={dummyProducts.slice(0, 4)} />
+                <ProductList products={dummyProducts.slice(0, 3)} />
 
                 <div style={{ textAlign: 'center', marginTop: '24px' }}>
                   <button
@@ -234,8 +164,8 @@ const Home = () => {
         footer={null}
         centered
         width={480}
-        bodyStyle={{ padding: 0, borderRadius: 28 }}
-        destroyOnClose
+        styles={{ body: { padding: 0, borderRadius: 28 } }}
+        destroyOnHidden
       >
         <Login isModal onSuccess={handleLoginSuccess} />
       </Modal>

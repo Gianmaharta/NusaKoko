@@ -9,7 +9,7 @@ const ContactCard = ({ title, icon, link }) => (
     <Card
       hoverable
       className="contact-card"
-      bodyStyle={{ textAlign: 'center', padding: '24px 16px' }}
+      styles={{ body: { textAlign: 'center', padding: '24px 16px' } }}
     >
       <img src={icon} alt={title} style={{ width: 64, marginBottom: 16 }} />
       <Paragraph className="contact-card-title">{title}</Paragraph>
