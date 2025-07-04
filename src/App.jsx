@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Home from "./pages/user/Home";
 import Produk from "./pages/Produk";
+import DetailItem from "./components/user/Product/DetailItem";
 import PrivateRoute from "./components/PrivateRoute";
 import Register from "./pages/Register";
 import "antd/dist/reset.css";
@@ -17,6 +18,14 @@ function App() {
           element={
             <PrivateRoute>
               <Produk />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/detail"
+          element={
+            <PrivateRoute>
+              <DetailItem />
             </PrivateRoute>
           }
         />
