@@ -24,10 +24,11 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
+  /* display: flex;
+  place-items: center; */
   min-width: 320px;
   min-height: 100vh;
+  background-color: #ffffff;
 }
 
 h1 {
@@ -66,3 +67,36 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+/* Navbar */
+
+/* index.css atau App.css */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+.custom-navbar-menu .ant-menu-item {
+  margin: 0 12px !important;
+}
+
+/* Ubah warna garis hover */
+.custom-navbar-menu .ant-menu-item::after {
+  border-bottom: 2px solid #E8D8C3 !important; /* Ganti sesuai warna yang kamu mau */
+}
+
+/* Opsional: ubah warna saat item aktif juga */
+.custom-navbar-menu .ant-menu-item-selected::after {
+  border-bottom: 2px solid #8B5E3C !important;
+}
+
+
+/* Navbar */

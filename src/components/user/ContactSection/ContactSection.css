@@ -1,0 +1,104 @@
+/* Bagian luar latar belakang */
+.contact-section {
+  background-color: #4E342E; /* Warna dasar website */
+  padding: 0px 24px;
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
+/* Kotak berisi judul & deskripsi */
+.contact-header-box {
+  background-color: #E8D8C3;
+  border-radius: 16px;
+  padding: 40px 24px;
+  margin: 0 auto 48px;
+  max-width: 1200px;
+  text-align: center;
+}
+
+.contact-title {
+  font-size: 48px;          /* Atur ukuran */
+  font-weight: 630  !important;         /* Tebal (bold) */
+  font-family: 'Poppins', sans-serif;  /* Ganti font jika perlu */
+  color: #4E342E;
+  text-align: center;
+}
+
+.contact-description {
+  font-size: 15px;
+  font-weight: 400;
+  font-family: 'Poppins', sans-serif;
+  line-height: 0.7;
+  text-align: center;
+  color: #4E342E;
+  margin: 6px auto;
+  max-width: 1000px;
+}
+
+/* Pembungkus agar card sejajar dengan header box */
+.contact-card-wrapper {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px; /* biar tidak mepet di layar kecil */
+  box-sizing: border-box;
+}
+
+
+/* Container flex yang menata card */
+.contact-card-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* Ukuran dan tampilan card */
+.contact-card {
+  flex: 1 1 calc(33.333% - 16px); /* 3 card per baris, dikurangi gap */
+  min-width: 260px;
+  max-width: 100%;
+  border-radius: 12px;
+  background-color: #E8D8C3;
+  border: none;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box;
+}
+
+@media (max-width: 992px) {
+  .contact-card {
+    flex: 1 1 calc(50% - 16px); /* 2 per baris di tablet */
+  }
+}
+
+@media (max-width: 600px) {
+  .contact-card {
+    flex: 1 1 100%; /* 1 per baris di HP */
+  }
+}
+
+.contact-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.contact-card-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.contact-card-title {
+  margin-bottom: 0;
+  font-weight: 500;
+  color: #4E342E;
+}
+
+/* Style umum untuk semua icon */
+.contact-card-icon {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  margin-bottom: 16px;
+}
+
+
+

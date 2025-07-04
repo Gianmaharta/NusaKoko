@@ -1,0 +1,14 @@
+.purchase-card-wrapper {
+  padding: 4px !important; /* kontrol jarak antar card */
+}
+
+.product-card {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 12px;
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover {
+  transform: scale(1.02);
+}

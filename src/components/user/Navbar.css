@@ -1,0 +1,14 @@
+/* Tambahkan ini di file CSS yang diimpor di Navbar.jsx */
+
+.custom-navbar-menu .ant-menu-item {
+  margin: 0 40px; /* jarak antar item */
+  font-family: 'Poppins', sans-serif; /* ganti sesuai font yang kamu pakai */
+  font-size: 16px; /* ukuran font */
+  font-weight: 550; /* ketebalan */
+  color: #4E342E !important;
+  background: transparent !important;
+}
+
+.custom-navbar-menu .ant-menu-item:hover {
+  color: #8B5E3C !important;
+}
