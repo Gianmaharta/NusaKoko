@@ -29,8 +29,8 @@ const ContactSection = () => {
       {/* Bungkus card dengan container agar sejajar dengan header box */}
         <div className="contact-card-wrapper">
             <div className="contact-card-container">
-                <ContactCard title="WA Bussiness" icon={waIcon} link="https://wa.me/6281234567890" />
-                <ContactCard title="Instagram" icon={igIcon} link="https://www.instagram.com/prabowo/" />
+                <ContactCard title="WA Bussiness" icon={waIcon} link="https://wa.me/+6287703580702" />
+                <ContactCard title="Instagram" icon={igIcon} link="https://www.instagram.com/nusakokobioplastic?igsh=bWs0eHpraWdzZHZk" />
                 <ContactCard title="Email" icon={emailIcon} link="mailto:nusakoko@gmail.com" />
             </div>
         </div>
