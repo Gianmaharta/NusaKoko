@@ -7,7 +7,7 @@ import Register from "./pages/Register";
 
 import Keranjang from "./pages/user/Keranjang";
 import Checkout from "./pages/user/Checkout";
-
+import DetailItem from "./components/user/Product/DetailItem";
 import Login from "./pages/Login";
 import AdminDashboard from "./pages/admin/HomeAdmin";
 import UserDashboard from "./pages/user/Home";
@@ -56,6 +56,14 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route
+          path="/detail"
+          element={
+            <PrivateRoute>
+              <DetailItem />
+            </PrivateRoute>
+          }
+        />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Router>

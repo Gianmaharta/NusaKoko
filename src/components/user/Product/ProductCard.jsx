@@ -1,38 +1,59 @@
 import React from 'react';
 import { Card } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import './ProductCard.css';
-
 
 const { Meta } = Card;
 
-const ProductCard = ({ imageSrc, title, price, style = {}, imgStyle = {} }) => {
+const ProductCard = ({ imageSrc, title, price, onShowLoginModal }) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      if (onShowLoginModal) onShowLoginModal();
+      return;
+    }
+    navigate('/detail', {
+      state: {
+        product: {
+          title,
+          price,
+          image: imageSrc,
+          description:
+            "Kantong plastik ini terbuat dari serabut kelapa dan bahan biodegradable, sehingga lebih ramah lingkungan dibandingkan plastik konvensional. Serabut kelapa memberikan kekuatan tambahan, membuat kantong tidak mudah sobek namun tetap mudah terurai secara alami.",
+        },
+      },
+    });
+  };
+
   return (
     <Card
       hoverable
+      onClick={handleClick}
       style={{
-        width: 240,
-        boxShadow: 'none',         // hilangkan shadow
-        border: 'none',            // hilangkan border
+        width: 200,
+        boxShadow: 'none',
+        border: 'none',
         textAlign: 'center',
-        backgroundColor: 'transparent', // biar matching sama section
-        ...style,
+        backgroundColor: 'transparent',
+        cursor: 'pointer',
       }}
       cover={
         <img
           alt={title}
           src={imageSrc}
           style={{
-            borderRadius: 16,
-            height: 200,
+            borderRadius: 12,
+            height: 180,
             objectFit: 'cover',
-            ...imgStyle,
           }}
         />
       }
     >
       <Meta
-        title={<span style={{ color: '#4E342E', fontSize: 20, fontWeight: 500 }}>{title}</span>}
-        description={<span style={{ color: '#4E342E', fontSize: 18 }}>Rp. {price}</span>}
+        title={<span style={{ color: '#4E342E' }}>{title}</span>}
+        description={<span style={{ color: '#4E342E' }}>Rp. {price}</span>}
       />
     </Card>
   );

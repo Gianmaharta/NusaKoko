@@ -3,7 +3,7 @@ import React from 'react';
 import { Row, Col } from 'antd';
 import ProductCard from './ProductCard'; // pastikan path ini benar
 
-const ProductList = ({ products }) => {
+const ProductList = ({ products, onShowLoginModal }) => {
   return (
     <div style={{
         width: '100%',
@@ -28,6 +28,7 @@ const ProductList = ({ products }) => {
                     imageSrc={product.image}
                     title={product.title}
                     price={product.price}
+                    onShowLoginModal={onShowLoginModal}
                     style={{ width: 260 }}
                     imgStyle={{ height: 210 }}
                     className="purchase-card"

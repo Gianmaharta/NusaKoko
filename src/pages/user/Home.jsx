@@ -134,7 +134,7 @@ const handleViewAllClick = () => {
               <section id="pembelian" className="section-container-pembelian section-scroll-margin">
                 <Title level={2} className="section-title">Produk NusaKoko</Title>
 
-                <ProductList products={dummyProducts.slice(0, 3)} />
+                <ProductList products={dummyProducts.slice(0, 3)} onShowLoginModal={() => setLoginModalVisible(true)} />
 
                 <div style={{ textAlign: 'center', marginTop: '24px' }}>
                   <button
