@@ -14,6 +14,7 @@ import UserDashboard from "./pages/user/Home";
 import StokProduk from "./pages/admin/StokProduk";
 import TambahProduk from "./pages/admin/TambahProduk";
 import Pesanan from "./pages/admin/Pesanan";
+import EditProduk from "./pages/admin/EditProduk";
  
 import "antd/dist/reset.css";
 import { CartProvider } from "./context/CartContext";
@@ -74,6 +75,14 @@ function App() {
               element={
                 <PrivateRoute allowedRoles={["admin"]}>
                   <TambahProduk />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/admin/edit-produk/:id"
+              element={
+                <PrivateRoute allowedRoles={["admin"]}>
+                  <EditProduk />
                 </PrivateRoute>
               }
             />

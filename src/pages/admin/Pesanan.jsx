@@ -35,6 +35,12 @@ const Pesanan = () => {
     setDropdownIdx(null);
   };
 
+  function handleLogout() {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('token');
+    navigate('/');
+  }
+
   return (
     <div style={{ minHeight: "100vh", background: "#e9dbc7", fontFamily: 'Inter, Arial, sans-serif', width: '100vw', overflowX: 'hidden' }}>
       {/* Header */}
@@ -58,13 +64,17 @@ const Pesanan = () => {
               </svg>
             </span>
           </div>
-          <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-              <path d="M20 24V26C20 27.1046 19.1046 28 18 28H8C6.89543 28 6 27.1046 6 26V6C6 4.89543 6.89543 4 8 4H18C19.1046 4 20 4.89543 20 6V8" stroke="#222" strokeWidth="2.5" strokeLinecap="round"/>
-              <path d="M26 16L14 16" stroke="#222" strokeWidth="2.5" strokeLinecap="round"/>
-              <path d="M22 12L26 16L22 20" stroke="#222" strokeWidth="2.5" strokeLinecap="round"/>
+          <button
+            onClick={handleLogout}
+            style={{ width: 72, height: 72, borderRadius: '50%', background: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', border: 'none' }}
+            title="Logout"
+          >
+            <svg width="64" height="64" viewBox="0 0 28 28" fill="none">
+              <rect x="4" y="4" width="14" height="20" rx="2" stroke="#222" strokeWidth="2.5" fill="none" />
+              <path d="M18 14H8" stroke="#222" strokeWidth="2.5" strokeLinecap="round"/>
+              <path d="M14 10L18 14L14 18" stroke="#222" strokeWidth="2.5" strokeLinecap="round"/>
             </svg>
-          </div>
+          </button>
         </div>
       </div>
       {/* Main Content */}

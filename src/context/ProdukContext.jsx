@@ -26,8 +26,18 @@ export function ProdukProvider({ children }) {
     ]);
   }
 
+  function editProduk(id, updatedProduk) {
+    setProduk((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, ...updatedProduk, id } : p))
+    );
+  }
+
+  function deleteProduk(id) {
+    setProduk((prev) => prev.filter((p) => p.id !== id));
+  }
+
   return (
-    <ProdukContext.Provider value={{ produk, addProduk }}>
+    <ProdukContext.Provider value={{ produk, addProduk, editProduk, deleteProduk }}>
       {children}
     </ProdukContext.Provider>
   );
