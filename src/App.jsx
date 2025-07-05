@@ -47,6 +47,15 @@ function App() {
               </PrivateRoute>
             }
           />
+          {/* Tambahkan private route untuk admin */}
+          <Route
+            path="/admin"
+            element={
+              <PrivateRoute allowedRoles={["admin"]}>
+                <AdminDashboard />
+              </PrivateRoute>
+            }
+          />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Router>
