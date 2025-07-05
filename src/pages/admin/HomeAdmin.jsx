@@ -128,17 +128,55 @@ const DashboardAdmin = () => {
           {/* Grafik Penjualan */}
           <div style={{ background: "#4E342E", color: "#fff", borderRadius: 20, boxShadow: "0 6px #7ba05b", padding: 32, textAlign: 'left', gridColumn: '1/2', gridRow: '2/4', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <div style={{ fontSize: 22, marginBottom: 16 }}>Grafik Penjualan (7 Hari Terakhir)</div>
-            {/* Simple Bar Chart */}
-            <div style={{ display: "flex", alignItems: "flex-end", height: 180, gap: 12, marginBottom: 8 }}>
-              {salesData.map((val, idx) => (
-                <div key={idx} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                  <div style={{ background: "#7ba05b", width: 28, height: val * 20, borderRadius: 6, marginBottom: 4 }}></div>
-                  <div style={{ color: "#fff", fontSize: 16 }}>{days[idx]}</div>
-                </div>
-              ))}
-            </div>
-            <div style={{ display: "flex", justifyContent: "space-between", color: "#fff", fontSize: 14 }}>
-              {[0,1,2,3,4,5,6,7,8].map(n => <span key={n}>{n}</span>)}
+            <div style={{ width: '100%', height: '320px', background: 'none', position: 'relative' }}>
+              <svg width="100%" height="100%" viewBox="0 0 600 320" preserveAspectRatio="none" style={{ display: 'block' }}>
+                {/* Grid horizontal dan label Y */}
+                {[...Array(9)].map((_, i) => (
+                  <g key={i}>
+                    <line x1={60} y1={40 + i * 30} x2={580} y2={40 + i * 30} stroke="#fff" strokeOpacity={0.25} strokeWidth={2} />
+                    <text x={50} y={45 + i * 30} fill="#fff" fontSize={18} textAnchor="end">{8 - i}</text>
+                  </g>
+                ))}
+                {/* Bar */}
+                {salesData.map((val, idx) => {
+                  const barCount = salesData.length;
+                  const chartWidth = 520;
+                  const barWidth = 48;
+                  const gap = (chartWidth - barCount * barWidth) / (barCount - 1);
+                  const x = 60 + idx * (barWidth + gap);
+                  const y = 40 + (8 - val) * 30;
+                  const height = val * 30;
+                  return (
+                    <rect
+                      key={idx}
+                      x={x}
+                      y={y}
+                      width={barWidth}
+                      height={height}
+                      rx={6}
+                      fill="#7ba05b"
+                    />
+                  );
+                })}
+                {/* Sumbu X label hari */}
+                {days.map((d, idx) => {
+                  const barCount = salesData.length;
+                  const chartWidth = 520;
+                  const barWidth = 48;
+                  const gap = (chartWidth - barCount * barWidth) / (barCount - 1);
+                  const x = 60 + idx * (barWidth + gap) + barWidth / 2;
+                  return (
+                    <text
+                      key={d}
+                      x={x}
+                      y={315}
+                      fill="#fff"
+                      fontSize={20}
+                      textAnchor="middle"
+                    >{d}</text>
+                  );
+                })}
+              </svg>
             </div>
           </div>
 
