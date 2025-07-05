@@ -33,6 +33,8 @@ const Pesanan = () => {
   const handleStatusUpdate = (idx, status) => {
     setPesanan(prev => prev.map((p, i) => i === idx ? { ...p, statusPesanan: status } : p));
     setDropdownIdx(null);
+    // Simpan status ke localStorage
+    localStorage.setItem('statusPesananTerakhir', status);
   };
 
   function handleLogout() {
@@ -144,6 +146,12 @@ const Pesanan = () => {
                             </div>
                           )}
                         </div>
+                        <button
+                          style={{ marginLeft: 8, background: '#4E342E', color: '#fff', border: 'none', borderRadius: 6, padding: '6px 12px', cursor: 'pointer' }}
+                          onClick={() => navigate('/informasi-pesanan')}
+                        >
+                          Lihat Detail
+                        </button>
                         <span style={{ color: '#4E342E', fontWeight: 500, fontSize: 16, marginLeft: 8 }}>No. Resi : {p.resi}</span>
                       </td>
                     </tr>

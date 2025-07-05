@@ -15,6 +15,7 @@ import StokProduk from "./pages/admin/StokProduk";
 import TambahProduk from "./pages/admin/TambahProduk";
 import Pesanan from "./pages/admin/Pesanan";
 import EditProduk from "./pages/admin/EditProduk";
+import InformasiPesanan from './pages/user/InformasiPesanan';
  
 import "antd/dist/reset.css";
 import { CartProvider } from "./context/CartContext";
@@ -102,6 +103,7 @@ function App() {
               </PrivateRoute>
             }
           />
+            <Route path="/informasi-pesanan" element={<InformasiPesanan />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </Router>

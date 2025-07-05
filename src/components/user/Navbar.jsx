@@ -193,6 +193,7 @@ const Navbar = ({ onSearch, onShowLoginModal }) => {
             fontSize: 18,
             cursor: 'pointer',
           }}
+          onClick={() => navigate('/keranjang')}
         >
           <ShoppingCartOutlined />
         </div>

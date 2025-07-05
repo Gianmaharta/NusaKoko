@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Layout, Typography, Button } from "antd";
 import Navbar from "../Navbar";
 import Footer from "../Footer";
@@ -10,6 +10,7 @@ const { Title, Paragraph } = Typography;
 const DetailItem = () => {
   const { state } = useLocation();
   const product = state?.product;
+  const navigate = useNavigate();
 
   const [quantity, setQuantity] = useState(1);
   const stok = 10;
@@ -56,17 +57,17 @@ const DetailItem = () => {
 
           {/* Info Produk */}
           <div style={{ flex: 1, minWidth: 300 }}>
-            <Title level={2} style={{ marginBottom: 0, color: "#fff" }}>
+            <Title level={2} style={{ marginBottom: 0, color: "#fff", textAlign: 'left' }}>
               {product.title}
             </Title>
-            <Title level={4} style={{ color: "#fff", marginTop: 8 }}>
+            <Title level={4} style={{ color: "#fff", marginTop: 8, textAlign: 'left' }}>
               Rp. {product.price}
             </Title>
 
             <div style={{ marginTop: 32 }}>
               <Title
                 level={5}
-                style={{ color: "#fff", marginBottom: 0, marginTop: 24 }}
+                style={{ color: "#fff", marginBottom: 0, marginTop: 24, textAlign: 'left' }}
               >
                 Deskripsi
               </Title>
@@ -81,7 +82,7 @@ const DetailItem = () => {
                 }}
               />
               <Paragraph
-                style={{ maxWidth: "600px", color: "#fff", lineHeight: 1.8 }}
+                style={{ maxWidth: "600px", color: "#fff", lineHeight: 1.8, textAlign: 'left' }}
               >
                 {product.description ??
                   "Produk ramah lingkungan ini terbuat dari serabut kelapa dan bahan biodegradable, sehingga lebih ramah lingkungan dibandingkan plastik konvensional. Serabut kelapa memberikan kekuatan tambahan, membuat kantong tidak mudah sobek namun tetap mudah terurai secara alami."}
@@ -147,12 +148,14 @@ const DetailItem = () => {
                 backgroundColor: "#4CAF50",
                 border: "none",
               }}
+              onClick={() => navigate('/keranjang')}
             >
               Keranjang
             </Button>
             <Button
               block
               style={{ borderColor: "#4E342E", color: "#4E342E" }}
+              onClick={() => navigate('/checkout')}
             >
               Beli Langsung
             </Button>

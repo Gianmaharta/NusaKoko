@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Layout, Radio } from 'antd';
 import Navbar from '../../components/user/Navbar';
 import Footer from '../../components/user/Footer';
@@ -10,6 +10,8 @@ import shopeepay from '../../assets/shopeepay.png';
 import gopay from '../../assets/gopay.png';
 import dana from '../../assets/dana.png';
 import ovo from '../../assets/ovo.png';
+import { CheckCircleFilled } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 
 const { Content } = Layout;
 
@@ -25,6 +27,15 @@ const metodePembayaran = [
 export default function Checkout() {
   const { cart } = useCart();
   const [metode, setMetode] = useState('shopeepay');
+  const [showSuccess, setShowSuccess] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (showSuccess) {
+      const timer = setTimeout(() => setShowSuccess(false), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [showSuccess]);
 
   const checkedCart = cart.filter(i => i.checked);
   const total = checkedCart.reduce((sum, item) => sum + item.price * item.qty, 0);
@@ -67,13 +78,46 @@ export default function Checkout() {
                   <span style={{ color: '#5B4036', fontSize: 18 }}>Total</span>
                   <span style={{ color: '#5B4036', fontWeight: 700, fontSize: 20 }}>Rp {total.toLocaleString('id-ID')}</span>
                 </div>
-                <button style={{ width: '100%', background: '#6BA368', color: 'white', fontWeight: 700, fontSize: 20, border: 'none', borderRadius: 8, padding: '14px 0', cursor: 'pointer', marginTop: 10 }}>Beli</button>
+                <button
+                  style={{ width: '100%', background: '#6BA368', color: 'white', fontWeight: 700, fontSize: 20, border: 'none', borderRadius: 8, padding: '14px 0', cursor: 'pointer', marginTop: 10 }}
+                  onClick={() => navigate('/informasi-pesanan')}
+                >Beli</button>
               </div>
             </div>
           </div>
         </div>
       </Content>
       <Footer />
+      {showSuccess && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          background: 'rgba(0,0,0,0.18)',
+          zIndex: 9999,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+          <div style={{
+            background: '#6BA368',
+            borderRadius: 16,
+            padding: '48px 64px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
+          }}>
+            <svg width="90" height="90" viewBox="0 0 90 90" fill="none">
+              <circle cx="45" cy="45" r="40" stroke="#fff" strokeWidth="6" fill="none" />
+              <path d="M28 48L41 61L62 36" stroke="#fff" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            <div style={{ color: '#fff', fontWeight: 700, fontSize: 32, marginTop: 24, textAlign: 'center' }}>Transaksi Berhasil</div>
+          </div>
+        </div>
+      )}
     </Layout>
   );
 } 
