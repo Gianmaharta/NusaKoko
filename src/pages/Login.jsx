@@ -22,6 +22,9 @@ const Login = ({ isModal, onSuccess }) => {
       const res = await api.post("/api/nusakoko/auth/login", formData);
       localStorage.setItem("token", res.data.access_token);
       localStorage.setItem("role", res.data.role); // Simpan role
+      // PENTING: Tambahkan baris ini untuk menyimpan user_id
+      localStorage.setItem("user_id", res.data.user_id);
+      
       if (onSuccess) {
         onSuccess(res.data.role); // Kirim role ke handler
       } else {

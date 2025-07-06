@@ -1,11 +1,12 @@
 // src/pages/user/Profile/ProfileUser.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Upload, Typography, Layout, Card, Drawer, Input, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import Navbar from '../../../components/user/Navbar';
 import Footer from '../../../components/user/Footer';
 import './ProfileUser.css';
 import defaultProfileImage from '../../../assets/default-user.jpg';
+import { userAPI } from '../../../services/apiService';
 
 const { Content } = Layout;
 const { TextArea } = Input;
@@ -13,36 +14,70 @@ const { Title, Text } = Typography;
 
 const ProfileUser = () => {
   const [imageUrl, setImageUrl] = useState(null);
-
-  const [nama, setNama] = useState('Udin Suka Nasi Padang');
-  const [alamat, setAlamat] = useState(
-    'Jalan duren gang 7 no 21b kos guntur 21, banyuasri, singaraja, buleleng, bali. (kamar nomor 1), Buleleng, Kab. Buleleng, Bali.'
-  );
+  const [profilePhotoFile, setProfilePhotoFile] = useState(null);
+  const [nama, setNama] = useState('');
+  const [email, setEmail] = useState('');
+  const [alamat, setAlamat] = useState('');
 
   const [drawerNamaOpen, setDrawerNamaOpen] = useState(false);
   const [drawerAlamatOpen, setDrawerAlamatOpen] = useState(false);
+  const [drawerEmailOpen, setDrawerEmailOpen] = useState(false);
 
   const [inputNama, setInputNama] = useState(nama);
   const [inputAlamat, setInputAlamat] = useState(alamat);
+  const [inputEmail, setInputEmail] = useState(email);
 
   const maxNamaLength = 40;
 
-  const handleSaveNama = () => {
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const data = await userAPI.getProfile();
+        setNama(data.username || '');
+        setEmail(data.email || '');
+        setAlamat(data.address || '');
+        setImageUrl(data.profile_photo_url || null);
+      } catch (err) {
+        message.error('Gagal mengambil data profil');
+      }
+    };
+    fetchProfile();
+  }, []);
+
+  const handleSaveNama = async () => {
     if (inputNama.trim().length === 0) {
       message.error('Nama tidak boleh kosong.');
       return;
     }
-    setNama(inputNama.trim());
-    setDrawerNamaOpen(false);
+    try {
+      await userAPI.updateProfile({ username: inputNama });
+      setNama(inputNama.trim());
+      setDrawerNamaOpen(false);
+      message.success('Nama berhasil diupdate!');
+    } catch (err) {
+      message.error('Gagal update nama');
+    }
   };
 
-  const handleSaveAlamat = () => {
+  const handleSaveAlamat = async () => {
     if (inputAlamat.trim().length === 0) {
       message.error('Alamat tidak boleh kosong.');
       return;
     }
-    setAlamat(inputAlamat.trim());
-    setDrawerAlamatOpen(false);
+    try {
+      await userAPI.updateProfile({ address: inputAlamat });
+      setAlamat(inputAlamat.trim());
+      setDrawerAlamatOpen(false);
+      message.success('Alamat berhasil diupdate!');
+    } catch (err) {
+      message.error('Gagal update alamat');
+    }
+  };
+
+  const handleSaveEmail = () => {
+    // Email tidak bisa diupdate karena backend tidak support
+    setDrawerEmailOpen(false);
+    message.info('Email tidak dapat diubah.');
   };
 
   const props = {
@@ -57,15 +92,26 @@ const ProfileUser = () => {
         alert('Ukuran file terlalu besar (maks 10MB)');
         return Upload.LIST_IGNORE;
       }
-
       const reader = new FileReader();
       reader.onload = () => {
         setImageUrl(reader.result);
       };
       reader.readAsDataURL(file);
+      setProfilePhotoFile(file);
+      // Upload langsung ke backend
+      handleUploadPhoto(file);
       return false;
     },
     showUploadList: false,
+  };
+
+  const handleUploadPhoto = async (file) => {
+    try {
+      await userAPI.updateProfile({ profile_photo: file });
+      message.success('Foto profil berhasil diupdate!');
+    } catch (err) {
+      message.error('Gagal update foto profil');
+    }
   };
 
   return (
@@ -162,6 +208,30 @@ const ProfileUser = () => {
               <div className="info-item" style={{ marginTop: 24 }}>
                 <div className="info-text">
                   <Text strong style={{ fontSize: '18px', fontFamily: 'Poppins, sans-serif' }}>
+                    Email
+                  </Text>
+                  <p
+                    style={{
+                      fontSize: '16px',
+                      fontFamily: 'Poppins, sans-serif',
+                      textAlign: 'justify',
+                      marginTop: '4px',
+                    }}
+                  >
+                    {email}
+                  </p>
+                </div>
+                <Button className="edit-button" onClick={() => {
+                  setInputEmail(email);
+                  setDrawerEmailOpen(true);
+                }}>
+                  Ubah
+                </Button>
+              </div>
+
+              <div className="info-item" style={{ marginTop: 24 }}>
+                <div className="info-text">
+                  <Text strong style={{ fontSize: '18px', fontFamily: 'Poppins, sans-serif' }}>
                     Alamat
                   </Text>
                   <p
@@ -229,6 +299,49 @@ const ProfileUser = () => {
           style={{
             width: '100%',
             marginTop: 16,
+            backgroundColor: '#4E342E',
+            color: '#fff',
+            border: 'none',
+          }}
+        >
+          Simpan
+        </Button>
+      </Drawer>
+
+      {/* Drawer Email */}
+      <Drawer
+        title="Edit Email"
+        placement="right"
+        onClose={() => setDrawerEmailOpen(false)}
+        open={drawerEmailOpen}
+        width={360}
+        bodyStyle={{ backgroundColor: '#E8D8C3' }}
+        headerStyle={{ backgroundColor: '#E8D8C3' }}
+      >
+        <p style={{
+          fontSize: '14px',
+          fontWeight: 600,
+          fontFamily: 'Poppins, sans-serif',
+          color: '#4E342E',
+          marginBottom: 6
+        }}>
+          Masukkan email Anda:
+        </p>
+        <Input
+          value={inputEmail}
+          onChange={(e) => setInputEmail(e.target.value)}
+          placeholder="Email"
+          style={{
+            fontFamily: 'Poppins, sans-serif',
+            fontSize: '14px',
+            color: '#4E342E',
+            marginBottom: 20,
+          }}
+        />
+        <Button
+          onClick={handleSaveEmail}
+          style={{
+            width: '100%',
             backgroundColor: '#4E342E',
             color: '#fff',
             border: 'none',

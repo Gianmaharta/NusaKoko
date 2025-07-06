@@ -11,11 +11,10 @@ import gopay from '../../assets/gopay.png';
 import dana from '../../assets/dana.png';
 import ovo from '../../assets/ovo.png';
 import { CheckCircleFilled } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { userAPI, orderAPI } from '../../services/apiService';
 
 const { Content } = Layout;
-
-const alamat = 'Jalan duren gang 7 no 21b kos guntur 21, banyuasri, singaraja, buleleng, bali. (kamar nomor 1), Buleleng, Kab. Buleleng, Bali.';
 
 const metodePembayaran = [
   { value: 'shopeepay', label: 'Shopee pay', icon: shopeepay },
@@ -25,10 +24,15 @@ const metodePembayaran = [
 ];
 
 export default function Checkout() {
-  const { cart } = useCart();
+  const location = useLocation();
+  const productFromDetail = location.state?.product;
+
+  const { cart, setCart } = useCart();
   const [metode, setMetode] = useState('shopeepay');
   const [showSuccess, setShowSuccess] = useState(false);
   const navigate = useNavigate();
+  const [alamat, setAlamat] = useState('');
+  const [editAlamat, setEditAlamat] = useState(false);
 
   useEffect(() => {
     if (showSuccess) {
@@ -37,8 +41,90 @@ export default function Checkout() {
     }
   }, [showSuccess]);
 
-  const checkedCart = cart.filter(i => i.checked);
-  const total = checkedCart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  useEffect(() => {
+    // Fetch alamat user dari backend
+    const fetchProfile = async () => {
+      try {
+        const data = await userAPI.getProfile();
+        setAlamat(data.address || '');
+      } catch (err) {
+        // handle error
+      }
+    };
+    fetchProfile();
+  }, []);
+
+  const handleAlamatChange = (e) => setAlamat(e.target.value);
+
+  const handleAlamatSave = async () => {
+    try {
+      await userAPI.updateAddress(alamat);
+      setEditAlamat(false);
+    } catch (err) {
+      // handle error
+    }
+  };
+
+  const checkedCart = productFromDetail
+    ? [{ ...productFromDetail, checked: true }]
+    : cart.filter(i => i.checked);
+
+  const total = checkedCart.reduce((sum, item) => sum + item.price * (item.qty || 1), 0);
+
+  
+  const handleBeli = async () => {
+    try {
+      const user_id = localStorage.getItem('user_id');
+      const items = checkedCart.map(item => ({
+        product_id: item.id,
+        quantity: item.qty || 1, // Pastikan quantity selalu ada nilainya
+        // Ambil harga dari state, bukan kirim ke backend
+        // Backend akan mengambil harga dari database
+      }));
+
+      if (!user_id) {
+          alert("Sesi Anda telah berakhir, silakan login kembali.");
+          return;
+      }
+      if (items.length === 0) {
+          alert("Keranjang Anda kosong.");
+          return;
+      }
+      
+      // Panggil API untuk membuat pesanan
+      const res = await orderAPI.createOrder({
+        user_id,
+        items_json: JSON.stringify(items)
+      });
+
+      // --- PERUBAHAN DIMULAI DARI SINI ---
+
+      // Cek apakah order berhasil dibuat dan kita mendapat order_id
+      if (res && res.order_id) {
+          // 1. Tampilkan notifikasi sukses
+          setShowSuccess(true);
+
+          // (Opsional tapi direkomendasikan) Bersihkan item yang sudah di-checkout dari keranjang
+          const newCart = cart.filter(item => !item.checked);
+          setCart(newCart);
+
+          // 2. Tunggu 2 detik agar user bisa lihat notifikasi
+          setTimeout(() => {
+              // 3. Redirect ke halaman informasi pesanan dengan ID pesanan baru
+              navigate(`/informasi-pesanan/${res.order_id}`);
+          }, 2000); // 2000 milidetik = 2 detik
+
+      } else {
+          // Handle jika response dari backend tidak sesuai harapan
+          console.error("Order creation failed, response:", res);
+          alert("Terjadi kesalahan saat membuat pesanan, silakan coba lagi.");
+      }
+
+    } catch (err) {
+      console.error("Order error:", err);
+      alert("Terjadi kesalahan koneksi, silakan coba lagi.");
+    }
+  };
 
   return (
     <Layout style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -50,16 +136,26 @@ export default function Checkout() {
             <div style={{ flex: 2 }}>
               <div style={{ background: '#E5D6C5', borderRadius: 16, marginBottom: 32, padding: 32, textAlign: 'left' }}>
                 <div style={{ fontWeight: 700, fontSize: 24, color: '#5B4036', marginBottom: 8 }}>ALAMAT PENGIRIMAN</div>
-                <div style={{ color: '#5B4036', fontSize: 20 }}>{alamat}</div>
+                {editAlamat ? (
+                  <>
+                    <textarea value={alamat} onChange={handleAlamatChange} />
+                    <button onClick={handleAlamatSave}>Simpan</button>
+                  </>
+                ) : (
+                  <>
+                    <div style={{ color: '#5B4036', fontSize: 20 }}>{alamat}</div>
+                    <button onClick={() => setEditAlamat(true)}>Ubah Alamat</button>
+                  </>
+                )}
               </div>
               {checkedCart.map(item => (
                 <div key={item.id} style={{ background: '#E5D6C5', borderRadius: 16, display: 'flex', alignItems: 'center', marginBottom: 24, padding: 24 }}>
-                  <img src={item.image} alt={item.name} style={{ width: 120, height: 120, objectFit: 'cover', borderRadius: 8, marginRight: 32, background: '#fff' }} />
+                  <img src={item.image_url || item.image} alt={item.name} style={{ width: 120, height: 120, objectFit: 'cover', borderRadius: 8, marginRight: 32, background: '#fff' }} />
                   <div style={{ flex: 1, minWidth: 0, textAlign: 'left' }}>
                     <div style={{ fontWeight: 700, fontSize: 32, color: '#5B4036' }}>{item.name}</div>
-                    <div style={{ color: '#5B4036', fontSize: 20, marginTop: 8 }}>Jumlah: <b>x{item.qty}</b></div>
+                    <div style={{ color: '#5B4036', fontSize: 20, marginTop: 8 }}>Jumlah: <b>x{item.qty || 1}</b></div>
                   </div>
-                  <div style={{ fontWeight: 700, fontSize: 28, color: '#5B4036', marginLeft: 24 }}>Rp {item.price.toLocaleString('id-ID')}</div>
+                  <div style={{ fontWeight: 700, fontSize: 28, color: '#5B4036', marginLeft: 24 }}>Rp {(item.price * (item.qty || 1)).toLocaleString('id-ID')}</div>
                 </div>
               ))}
             </div>
@@ -80,7 +176,7 @@ export default function Checkout() {
                 </div>
                 <button
                   style={{ width: '100%', background: '#6BA368', color: 'white', fontWeight: 700, fontSize: 20, border: 'none', borderRadius: 8, padding: '14px 0', cursor: 'pointer', marginTop: 10 }}
-                  onClick={() => navigate('/informasi-pesanan')}
+                  onClick={handleBeli}
                 >Beli</button>
               </div>
             </div>
@@ -120,4 +216,4 @@ export default function Checkout() {
       )}
     </Layout>
   );
-} 
+}

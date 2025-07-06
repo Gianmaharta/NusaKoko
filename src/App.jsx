@@ -17,7 +17,8 @@ import Pesanan from "./pages/admin/Pesanan";
 import EditProduk from "./pages/admin/EditProduk";
 import InformasiPesanan from './pages/user/InformasiPesanan';
 import ProfilePage from './pages/user/Profile/ProfileUser';
- 
+import DaftarPesanan from './pages/user/DaftarPesanan';
+
 import "antd/dist/reset.css";
 import { CartProvider } from "./context/CartContext";
 import { ProdukProvider } from "./context/ProdukContext";
@@ -105,14 +106,22 @@ function App() {
               </PrivateRoute>
             }
           />
-            <Route path="/informasi-pesanan" element={<InformasiPesanan />} />
-            <Route path="*" element={<Navigate to="/" />} />
+            <Route path="/informasi-pesanan/:orderId" element={<InformasiPesanan />} />
+            <Route path="*" element={<Navigate to="/" />} 
+          />
+
+            <Route
+              path="/daftar-pesanan"
+               element={
+                <PrivateRoute>
+                  <DaftarPesanan />
+                </PrivateRoute>
+              }
+            />
           </Routes>
         </Router>
       </ProdukProvider>
     </CartProvider>
-
-
   );
 }
 

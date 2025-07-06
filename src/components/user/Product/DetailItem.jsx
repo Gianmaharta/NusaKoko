@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Layout, Typography, Button } from "antd";
+import { Layout, Typography, Button, notification } from "antd"; // Impor notification
 import Navbar from "../Navbar";
 import Footer from "../Footer";
+import { useCart } from '../../../context/CartContext';
+import { cartAPI } from "../../../services/apiService"; // Impor cartAPI
 
 const { Content } = Layout;
 const { Title, Paragraph } = Typography;
@@ -11,6 +13,7 @@ const DetailItem = () => {
   const { state } = useLocation();
   const product = state?.product;
   const navigate = useNavigate();
+  const { addToCartContext } = useCart(); // Ambil fungsi dari context
 
   const [quantity, setQuantity] = useState(1);
   const stok = product?.stock_quantity ?? 10;
@@ -28,6 +31,40 @@ const DetailItem = () => {
       </Layout>
     );
   }
+  
+  // --- FUNGSI BARU UNTUK MENAMBAHKAN KE KERANJANG ---
+  const handleAddToCart = async () => {
+    try {
+      // Panggil API untuk menambahkan item ke keranjang di backend
+      await cartAPI.addToCart(product.id, quantity);
+
+      // Update state keranjang di frontend melalui context
+      if (addToCartContext) {
+        addToCartContext({ ...product, qty: quantity, id: product.id });
+      }
+
+      // Tampilkan notifikasi sukses
+      notification.success({
+        message: 'Berhasil Ditambahkan',
+        description: `${product.name} telah ditambahkan ke keranjang.`,
+        placement: 'topRight',
+        duration: 2.5,
+      });
+
+      // Arahkan pengguna ke halaman keranjang
+      navigate('/keranjang');
+
+    } catch (error) {
+      // Tampilkan notifikasi jika gagal
+      notification.error({
+        message: 'Gagal Menambahkan',
+        description: 'Terjadi kesalahan saat menambahkan produk ke keranjang.',
+        placement: 'topRight',
+      });
+      console.error("Failed to add to cart:", error);
+    }
+  };
+
 
   const priceNum = typeof product.price === 'number'
     ? product.price
@@ -141,6 +178,7 @@ const DetailItem = () => {
               Subtotal<br />Rp. {subtotal.toLocaleString("id-ID")}
             </p>
 
+            {/* Ganti onClick pada tombol "Keranjang" */}
             <Button
               type="primary"
               block
@@ -149,14 +187,22 @@ const DetailItem = () => {
                 backgroundColor: "#4CAF50",
                 border: "none",
               }}
-              onClick={() => navigate('/keranjang')}
+              onClick={handleAddToCart}
             >
               Keranjang
             </Button>
+            
             <Button
               block
               style={{ borderColor: "#4E342E", color: "#4E342E" }}
-              onClick={() => navigate('/checkout')}
+              onClick={() => navigate('/checkout', {
+                state: {
+                  product: {
+                    ...product,
+                    qty: quantity
+                  }
+                }
+              })}
             >
               Beli Langsung
             </Button>
