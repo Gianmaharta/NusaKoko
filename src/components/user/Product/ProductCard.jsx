@@ -5,7 +5,10 @@ import './ProductCard.css';
 
 const { Meta } = Card;
 
-const ProductCard = ({ imageSrc, title, price, onShowLoginModal }) => {
+// Ganti sesuai alamat backend Anda
+const BACKEND_URL = "http://localhost:5000";
+
+const ProductCard = ({ product, onShowLoginModal }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -14,17 +17,19 @@ const ProductCard = ({ imageSrc, title, price, onShowLoginModal }) => {
       if (onShowLoginModal) onShowLoginModal();
       return;
     }
+    // Kirim seluruh data produk ke halaman detail
     navigate('/detail', {
-      state: {
-        product: {
-          title,
-          price,
-          image: imageSrc,
-          description:
-            "Kantong plastik ini terbuat dari serabut kelapa dan bahan biodegradable, sehingga lebih ramah lingkungan dibandingkan plastik konvensional. Serabut kelapa memberikan kekuatan tambahan, membuat kantong tidak mudah sobek namun tetap mudah terurai secara alami.",
-        },
-      },
+      state: { product }
     });
+  };
+
+  // Gambar
+  const getImageUrl = (src) => {
+    if (!src) return '';
+    if (src.startsWith('http://') || src.startsWith('https://')) {
+      return src;
+    }
+    return `${BACKEND_URL}/static/uploads/products/${src}`;
   };
 
   return (
@@ -41,8 +46,8 @@ const ProductCard = ({ imageSrc, title, price, onShowLoginModal }) => {
       }}
       cover={
         <img
-          alt={title}
-          src={imageSrc}
+          alt={product.name || product.title}
+          src={getImageUrl(product.image_url || product.image)}
           style={{
             borderRadius: 12,
             height: 180,
@@ -52,8 +57,8 @@ const ProductCard = ({ imageSrc, title, price, onShowLoginModal }) => {
       }
     >
       <Meta
-        title={<span style={{ color: '#4E342E' }}>{title}</span>}
-        description={<span style={{ color: '#4E342E' }}>Rp. {price}</span>}
+        title={<span style={{ color: '#4E342E' }}>{product.name || product.title}</span>}
+        description={<span style={{ color: '#4E342E' }}>Rp. {Number(product.price).toLocaleString("id-ID")}</span>}
       />
     </Card>
   );

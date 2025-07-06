@@ -1,37 +1,49 @@
-import React, { useEffect, useRef } from "react"; // 1. Impor useRef
+import React, { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Layout, Typography, notification } from "antd";
 
 import ProductList from "../components/user/Product/ProductList";
 import Navbar from "../components/user/Navbar";
 import Footer from "../components/user/Footer";
-
-// Dummy produk
-import bagImage from "../assets/bag.png";
-import bowlImage from "../assets/bowl.png";
-import foodPlasticImage from "../assets/food-plastic.png";
+import { productAPI } from "../services/apiService"; // Import API service
 
 const { Content } = Layout;
 const { Title } = Typography;
 
-const allProducts = [
-  { id: 1, title: "Kantong Plastik", price: "10.000", image: bagImage },
-  { id: 2, title: "Plastik Makanan", price: "8.000", image: foodPlasticImage },
-  { id: 3, title: "Mangkok Plastik", price: "15.000", image: bowlImage },
-
-];
-
 const Produk = () => {
   const location = useLocation();
   const [api, contextHolder] = notification.useNotification();
-  
-  // 2. Buat "penanda" untuk memastikan notifikasi hanya muncul sekali
   const hasNotified = useRef(false);
 
+  // State untuk produk dan loading
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Ambil data produk dari backend
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await productAPI.getAllProducts();
+        if (Array.isArray(response)) {
+          setProducts(response);
+        } else if (response.success && Array.isArray(response.data)) {
+          setProducts(response.data);
+        } else {
+          setProducts([]);
+        }
+      } catch (error) {
+        setProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  // Notifikasi
   useEffect(() => {
     const notifData = location.state?.notification;
-
-    // 3. Tambahkan pengecekan penanda: !hasNotified.current
     if (notifData && !hasNotified.current) {
       api[notifData.type]({
         message: notifData.message,
@@ -39,10 +51,7 @@ const Produk = () => {
         duration: 2.5,
         placement: 'topRight',
       });
-      
       window.history.replaceState({}, document.title);
-      
-      // 4. Set penanda menjadi true agar tidak dijalankan lagi
       hasNotified.current = true;
     }
   }, [location, api]);
@@ -54,7 +63,7 @@ const Produk = () => {
       <Content style={{ padding: "36px", backgroundColor: "#4E342E" }}>
         <section className="section-container-pembelian section-scroll-margin">
           <Title level={2} className="section-title">Produk NusaKoko</Title>
-          <ProductList products={allProducts} />
+          <ProductList products={products} loading={loading} />
         </section>
       </Content>
       <Footer />

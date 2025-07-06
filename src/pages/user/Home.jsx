@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Home.css';
 import { Layout, Typography, FloatButton, Row, Col, Modal, message, notification } from 'antd';
 import { useNavigate } from "react-router-dom";
@@ -11,7 +11,7 @@ import ProductCard from '../../components/user/Product/ProductCard'; // komponen
 import ProductList from '../../components/user/Product/ProductList';
 import AboutSection from '../../components/user/AboutSection/AboutSection';
 import Login from '../Login'; // Pastikan path sesuai struktur folder Anda
-
+import { productAPI } from '../../services/apiService';
 
 import dashboardImage from '../../assets/dashboard-image.png';
 import bagImage from '../../assets/bag.png';
@@ -19,50 +19,75 @@ import bowlImage from '../../assets/bowl.png';
 import mangkokImage from '../../assets/mangkok.png';
 import foodPlasticImage from '../../assets/food-plastic.png';
 
-
-
 const { Content } = Layout;
 const { Title, Paragraph } = Typography;
-
-const dummyProducts = [
-  { id: 1, title: 'Kantong Plastik', price: '10.000', image: bagImage },
-  { id: 2, title: 'Plastik Makanan', price: '8.000', image: foodPlasticImage },
-  { id: 3, title: 'Mangkok Plastik', price: '15.000', image: bowlImage },
-  { id: 4, title: 'Kantong Plastik', price: '10.000', image: bagImage },
-  { id: 5, title: 'Plastik Makanan', price: '8.000', image: foodPlasticImage },
-  { id: 6, title: 'Mangkok Plastik', price: '15.000', image: bowlImage },
-  { id: 7, title: 'Kantong Plastik', price: '10.000', image: bagImage },
-  { id: 8, title: 'Plastik Makanan', price: '8.000', image: foodPlasticImage },
-  { id: 9, title: 'Mangkok Plastik', price: '15.000', image: bowlImage },
-  { id: 10, title: 'Kantong Plastik', price: '10.000', image: bagImage },
-  { id: 11, title: 'Plastik Makanan', price: '8.000', image: foodPlasticImage },
-  { id: 12, title: 'Mangkok Plastik', price: '15.000', image: bowlImage },
-];
 
 const Home = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [loginModalVisible, setLoginModalVisible] = useState(false);
   const [api, contextHolder] = notification.useNotification();
   const navigate = useNavigate();
+  const [redirectAfterLogin, setRedirectAfterLogin] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await productAPI.getAllProducts();
+        if (Array.isArray(response)) {
+          setProducts(response);
+        } else if (response.success && Array.isArray(response.data)) {
+          setProducts(response.data);
+        } else {
+          setProducts([]);
+        }
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        setProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
 
-const handleViewAllClick = () => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    navigate("/produk");
-  } else {
-    setLoginModalVisible(true);
-  }
-};
+  const handleAvatarClick = () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/profile");
+    } else {
+      setRedirectAfterLogin("/profile");
+      setLoginModalVisible(true);
+    }
+  };
+
+  const handleCartClick = () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/keranjang");
+    } else {
+      setRedirectAfterLogin("/keranjang");
+      setLoginModalVisible(true);
+    }
+  };
+
+  const handleViewAllClick = () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/produk");
+    } else {
+      setLoginModalVisible(true);
+    }
+  };
 
   const handleLoginModalClose = () => {
     setLoginModalVisible(false);
   };
 
   const handleLoginSuccess = (role) => {
-    // 1. Tutup modal login
     setLoginModalVisible(false);
-    // 2. Siapkan "paket" notifikasi yang akan dikirim
     const notificationState = {
       state: {
         notification: {
@@ -72,8 +97,11 @@ const handleViewAllClick = () => {
         }
       }
     };
-    // 3. Lakukan navigasi ke halaman yang sesuai SAMBIL MENGIRIM state
-    if (role === "admin") {
+    // Jika ada redirectAfterLogin (misal: ke keranjang), gunakan itu
+    if (redirectAfterLogin) {
+      navigate(redirectAfterLogin, notificationState);
+      setRedirectAfterLogin(null); // reset agar tidak nyangkut
+    } else if (role === "admin") {
       navigate("/admin", notificationState);
     } else {
       navigate("/produk", notificationState);
@@ -95,7 +123,12 @@ const handleViewAllClick = () => {
       />
 
       <Layout style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-        <Navbar onSearch={setSearchQuery} onShowLoginModal={() => setLoginModalVisible(true)} />
+        <Navbar
+          onSearch={setSearchQuery}
+          onShowLoginModal={() => setLoginModalVisible(true)}
+          handleCartClick={handleCartClick}
+          handleAvatarClick={handleAvatarClick}
+        />
 
         <Content style={{ padding: 0, backgroundColor: '#4E342E' }}>
           {/* Banner */}
@@ -112,7 +145,6 @@ const handleViewAllClick = () => {
               }}
             />
           </div>
-
 
           {/* Konten Utama */}
           <div style={{ padding: '36px' }}>
@@ -134,7 +166,11 @@ const handleViewAllClick = () => {
               <section id="pembelian" className="section-container-pembelian section-scroll-margin">
                 <Title level={2} className="section-title">Produk NusaKoko</Title>
 
-                <ProductList products={dummyProducts.slice(0, 3)} onShowLoginModal={() => setLoginModalVisible(true)} />
+                <ProductList 
+                  products={products.slice(0, 3)} 
+                  onShowLoginModal={() => setLoginModalVisible(true)}
+                  loading={loading}
+                />
 
                 <div style={{ textAlign: 'center', marginTop: '24px' }}>
                   <button
@@ -161,15 +197,12 @@ const handleViewAllClick = () => {
               </section>
             </div>
 
-
             {/* === Tentang Kami === */}
             <div className="section-wrapper" style={{ marginTop: '150px', marginBottom: '80px'}}>
               <section id="tentang-kami" className="section-scroll-margin">
                 <AboutSection />
               </section>
             </div>
-
-
           </div>
         </Content>
 

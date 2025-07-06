@@ -36,6 +36,24 @@ const Navbar = ({ onSearch, onShowLoginModal }) => {
     navigate("/");
   };
 
+  const handleCartClick = () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/keranjang");
+    } else {
+      if (onShowLoginModal) onShowLoginModal();
+    }
+  };
+
+    const handleAvatarClick = () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/profile");
+    } else {
+      if (onShowLoginModal) onShowLoginModal();
+      }
+    };
+
   const menuItems = [
     {
       key: '1',
@@ -176,7 +194,7 @@ const Navbar = ({ onSearch, onShowLoginModal }) => {
             fontSize: 18,
             cursor: 'pointer',
           }}
-          onClick={onShowLoginModal} // Tambahkan ini
+          onClick={handleAvatarClick} // Tambahkan ini
         >
           <UserOutlined />
         </div>
@@ -193,7 +211,8 @@ const Navbar = ({ onSearch, onShowLoginModal }) => {
             fontSize: 18,
             cursor: 'pointer',
           }}
-          onClick={() => navigate('/keranjang')}
+          onClick={handleCartClick}
+          title="Keranjang"
         >
           <ShoppingCartOutlined />
         </div>

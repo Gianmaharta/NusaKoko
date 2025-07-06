@@ -1,9 +1,18 @@
 // ProductList.jsx
 import React from 'react';
-import { Row, Col } from 'antd';
+import { Row, Col, Spin } from 'antd';
 import ProductCard from './ProductCard'; // pastikan path ini benar
 
-const ProductList = ({ products, onShowLoginModal }) => {
+const ProductList = ({ products, onShowLoginModal, loading = false }) => {
+  if (loading) {
+    return (
+      <div style={{ textAlign: 'center', padding: '50px' }}>
+        <Spin size="large" />
+        <p>Memuat produk...</p>
+      </div>
+    );
+  }
+
   return (
     <div style={{
         width: '100%',
@@ -25,9 +34,7 @@ const ProductList = ({ products, onShowLoginModal }) => {
                 className="purchase-card-wrapper"
                 >
                 <ProductCard
-                    imageSrc={product.image}
-                    title={product.title}
-                    price={product.price}
+                    product={product}
                     onShowLoginModal={onShowLoginModal}
                     style={{ width: 260 }}
                     imgStyle={{ height: 210 }}

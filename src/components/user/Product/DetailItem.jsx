@@ -13,7 +13,7 @@ const DetailItem = () => {
   const navigate = useNavigate();
 
   const [quantity, setQuantity] = useState(1);
-  const stok = 10;
+  const stok = product?.stock_quantity ?? 10;
 
   if (!product) {
     return (
@@ -29,7 +29,9 @@ const DetailItem = () => {
     );
   }
 
-  const priceNum = parseInt(product.price.replace(".", ""));
+  const priceNum = typeof product.price === 'number'
+    ? product.price
+    : parseFloat(product.price);
   const subtotal = priceNum * quantity;
 
   return (
@@ -46,8 +48,8 @@ const DetailItem = () => {
         >
           {/* Gambar Produk */}
           <img
-            src={product.image}
-            alt={product.title}
+            src={product.image_url || product.image}
+            alt={product.name || product.title}
             style={{
               width: 300,
               height: "auto",
@@ -58,10 +60,10 @@ const DetailItem = () => {
           {/* Info Produk */}
           <div style={{ flex: 1, minWidth: 300 }}>
             <Title level={2} style={{ marginBottom: 0, color: "#fff", textAlign: 'left' }}>
-              {product.title}
+              {product.name || product.title}
             </Title>
             <Title level={4} style={{ color: "#fff", marginTop: 8, textAlign: 'left' }}>
-              Rp. {product.price}
+              Rp. {priceNum.toLocaleString("id-ID")}
             </Title>
 
             <div style={{ marginTop: 32 }}>
@@ -84,8 +86,7 @@ const DetailItem = () => {
               <Paragraph
                 style={{ maxWidth: "600px", color: "#fff", lineHeight: 1.8, textAlign: 'left' }}
               >
-                {product.description ??
-                  "Produk ramah lingkungan ini terbuat dari serabut kelapa dan bahan biodegradable, sehingga lebih ramah lingkungan dibandingkan plastik konvensional. Serabut kelapa memberikan kekuatan tambahan, membuat kantong tidak mudah sobek namun tetap mudah terurai secara alami."}
+                {product.description ?? "Produk ramah lingkungan ini terbuat dari serabut kelapa dan bahan biodegradable, sehingga lebih ramah lingkungan dibandingkan plastik konvensional. Serabut kelapa memberikan kekuatan tambahan, membuat kantong tidak mudah sobek namun tetap mudah terurai secara alami."}
               </Paragraph>
             </div>
           </div>
