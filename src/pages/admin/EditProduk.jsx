@@ -30,7 +30,7 @@ const EditProduk = () => {
   const [fileName, setFileName] = useState("");
 
   useEffect(() => {
-    const p = produk.find((item) => item.id === id);
+    const p = produk.find((item) => String(item.id) === String(id));
     if (p) {
       setForm({
         name: p.name,
@@ -44,6 +44,10 @@ const EditProduk = () => {
     }
   }, [id, produk]);
 
+  if (!produk.find((item) => String(item.id) === String(id))) {
+    return <div style={{ padding: 40, fontSize: 24 }}>Memuat data produk...</div>;
+  }
+
   function handleChange(e) {
     const { name, value, files } = e.target;
     if (name === "image") {
@@ -54,12 +58,10 @@ const EditProduk = () => {
     }
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    editProduk(id, {
-      ...form,
-      image: form.image && typeof form.image !== "string" ? URL.createObjectURL(form.image) : form.image,
-    });
+    await editProduk(id, form);
+    alert("Produk berhasil diupdate!");
     navigate("/admin/stok-produk");
   }
 
@@ -100,7 +102,7 @@ const EditProduk = () => {
         {/* Sidebar */}
         <div style={{ width: 180, background: 'transparent', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 40, gap: 24 }}>
           <button style={{ padding: '18px 0', width: 160, fontSize: 22, background: '#fff', border: 'none', borderRadius: 12, boxShadow: '0 4px #7ba05b', color: '#4E342E', fontWeight: 500, marginBottom: 8, cursor: 'pointer' }} onClick={() => navigate('/admin/pesanan')}>Pesanan</button>
-          <button style={{ padding: '18px 0', width: 160, fontSize: 22, background: '#7ba05b', border: 'none', borderRadius: 12, boxShadow: '0 4px #7ba05b', color: '#fff', fontWeight: 500, cursor: 'pointer' }}>Stok Produk</button>
+          <button style={{ padding: '18px 0', width: 160, fontSize: 22, background: '#7ba05b', border: 'none', borderRadius: 12, boxShadow: '0 4px #7ba05b', color: '#fff', fontWeight: 500, cursor: 'pointer' }} onClick={() => navigate('/admin/stok-produk')}>Stok Produk</button>
         </div>
         {/* Konten utama */}
         <div style={{ flex: 1, padding: '40px 32px 0 32px', minHeight: '100%', display: 'flex', flexDirection: 'column' }}>

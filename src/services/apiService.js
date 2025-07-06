@@ -31,6 +31,58 @@ export const productAPI = {
       throw error;
     }
   },
+
+  // Menghapus produk berdasarkan ID
+  deleteProduct: async (id) => {
+    try {
+      const response = await api.delete(`/api/nusakoko/products/${id}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  // Menambah produk baru
+  addProduct: async (productData) => {
+    try {
+      const formData = new FormData();
+      formData.append('name', productData.name);
+      formData.append('price', productData.price);
+      formData.append('description', productData.desc || productData.description || '');
+      formData.append('sku', productData.sku);
+      formData.append('stock_quantity', productData.stock);
+      if (productData.image) {
+        formData.append('product_image', productData.image);
+      }
+      const response = await api.post('/api/nusakoko/products/', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  // Edit produk
+  editProduct: async (id, productData) => {
+    try {
+      const formData = new FormData();
+      formData.append('name', productData.name);
+      formData.append('price', productData.price);
+      formData.append('description', productData.desc || productData.description || '');
+      formData.append('sku', productData.sku);
+      formData.append('stock_quantity', productData.stock);
+      if (productData.image && typeof productData.image !== 'string') {
+        formData.append('product_image', productData.image);
+      }
+      const response = await api.put(`/api/nusakoko/products/${id}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 
 // API functions untuk autentikasi

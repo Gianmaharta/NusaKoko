@@ -38,14 +38,17 @@ const TambahProduk = () => {
     }
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    // Untuk demo, gambar tidak diupload, hanya simpan nama file
-    addProduk({
+    if (!form.image) {
+      alert("Silakan pilih gambar produk terlebih dahulu!");
+      return;
+    }
+    await addProduk({
       ...form,
-      image: form.image ? URL.createObjectURL(form.image) : null,
-      status: "Tersedia",
+      status: undefined, // status diatur otomatis di backend/context
     });
+    alert("Produk berhasil ditambahkan!");
     navigate("/admin/stok-produk");
   }
 
@@ -85,8 +88,8 @@ const TambahProduk = () => {
       <div style={{ display: 'flex', minHeight: 'calc(100vh - 100px)' }}>
         {/* Sidebar */}
         <div style={{ width: 180, background: 'transparent', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 40, gap: 24 }}>
-          <button style={{ padding: '18px 0', width: 160, fontSize: 22, background: '#fff', border: 'none', borderRadius: 12, boxShadow: '0 4px #7ba05b', color: '#4E342E', fontWeight: 500, marginBottom: 8, cursor: 'pointer' }} onClick={() => navigate('/admin/stok-produk')}>Pesanan</button>
-          <button style={{ padding: '18px 0', width: 160, fontSize: 22, background: '#7ba05b', border: 'none', borderRadius: 12, boxShadow: '0 4px #7ba05b', color: '#fff', fontWeight: 500, cursor: 'pointer' }}>Stok Produk</button>
+          <button style={{ padding: '18px 0', width: 160, fontSize: 22, background: '#fff', border: 'none', borderRadius: 12, boxShadow: '0 4px #7ba05b', color: '#4E342E', fontWeight: 500, marginBottom: 8, cursor: 'pointer' }} onClick={() => navigate('/admin/pesanan')}>Pesanan</button>
+          <button style={{ padding: '18px 0', width: 160, fontSize: 22, background: '#7ba05b', border: 'none', borderRadius: 12, boxShadow: '0 4px #7ba05b', color: '#fff', fontWeight: 500, cursor: 'pointer' }} onClick={() => navigate('/admin/stok-produk')}>Stok Produk</button>
         </div>
         {/* Konten utama */}
         <div style={{ flex: 1, padding: '40px 32px 0 32px', minHeight: '100%', display: 'flex', flexDirection: 'column' }}>

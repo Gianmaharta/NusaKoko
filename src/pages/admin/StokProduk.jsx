@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useProduk } from "../../context/ProdukContext";
 import logoNusaKoko from "../../assets/logo-nusakoko.png";
 import { useNavigate } from "react-router-dom";
@@ -15,8 +15,26 @@ function getTanggalIndo() {
 }
 
 const StokProduk = () => {
-  const { produk, deleteProduk } = useProduk();
+  const { produk, deleteProduk, fetchProduk } = useProduk();
   const navigate = useNavigate();
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    fetchProduk();
+  }, []);
+
+  // Filter produk berdasarkan search
+  const filteredProduk = produk.filter((p) => {
+    const q = search.toLowerCase();
+    return (
+      p.name?.toLowerCase().includes(q) ||
+      p.desc?.toLowerCase().includes(q) ||
+      p.sku?.toLowerCase().includes(q) ||
+      String(p.price).toLowerCase().includes(q) ||
+      String(p.stock).toLowerCase().includes(q) ||
+      p.status?.toLowerCase().includes(q)
+    );
+  });
 
   function handleEdit(id) {
     navigate(`/admin/edit-produk/${id}`);
@@ -90,7 +108,12 @@ const StokProduk = () => {
               </button>
               <div style={{ flex: 1 }} />
               <div style={{ background: '#e9dbc7', borderRadius: 10, display: 'flex', alignItems: 'center', padding: '0 18px', height: 48 }}>
-                <input placeholder="Cari produk..." style={{ background: 'transparent', border: 'none', color: '#4E342E', fontSize: 18, outline: 'none', width: 220 }} />
+                <input 
+                  placeholder="Cari produk..." 
+                  style={{ background: 'transparent', border: 'none', color: '#4E342E', fontSize: 18, outline: 'none', width: 220 }} 
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                />
                 <svg width="22" height="22" fill="#4E342E" viewBox="0 0 24 24"><path d="M21 21l-4.35-4.35m2.1-5.4a7.5 7.5 0 11-15 0 7.5 7.5 0 0115 0z" stroke="#4E342E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
               </div>
             </div>
@@ -111,7 +134,7 @@ const StokProduk = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {produk.map((p, i) => (
+                  {filteredProduk.map((p, i) => (
                     <tr key={p.id} style={{ background: i % 2 === 0 ? '#f5e7d6' : '#e9dbc7' }}>
                       <td style={{ padding: 10, border: '1px solid #4E342E', textAlign: 'left' }}>{p.id}</td>
                       <td style={{ padding: 10, border: '1px solid #4E342E', textAlign: 'center' }}>
