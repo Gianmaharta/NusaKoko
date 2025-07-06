@@ -16,6 +16,7 @@ import TambahProduk from "./pages/admin/TambahProduk";
 import Pesanan from "./pages/admin/Pesanan";
 import EditProduk from "./pages/admin/EditProduk";
 import InformasiPesanan from './pages/user/InformasiPesanan';
+import ProfilePage from './pages/user/Profile/ProfileUser';
  
 import "antd/dist/reset.css";
 import { CartProvider } from "./context/CartContext";
@@ -30,6 +31,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/profile" element={<ProfilePage />} />
             <Route
               path="/produk"
               element={
