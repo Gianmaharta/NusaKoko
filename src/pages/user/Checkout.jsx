@@ -104,6 +104,13 @@ export default function Checkout() {
           // 1. Tampilkan notifikasi sukses
           setShowSuccess(true);
 
+          // Update payment_status menjadi 'paid'
+          try {
+            await orderAPI.updatePaymentStatus(res.order_id, 'paid');
+          } catch (err) {
+            console.error('Gagal update status pembayaran:', err);
+          }
+
           // (Opsional tapi direkomendasikan) Bersihkan item yang sudah di-checkout dari keranjang
           const newCart = cart.filter(item => !item.checked);
           setCart(newCart);

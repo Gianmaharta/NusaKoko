@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import logoNusaKoko from "../../assets/logo-nusakoko.png";
+import { orderAPI } from "../../services/apiService";
 
 const hariIndo = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
 const bulanIndo = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
@@ -12,28 +13,40 @@ function getTanggalIndo() {
   return `${hari}, ${tanggal} ${bulan}`;
 }
 
-const dummyPesanan = [
-  {
-    id: "NKK-250702-003",
-    tanggal: "02-07-2025",
-    pelanggan: "Dede Mahendra",
-    produk: "Mangkok Plastik",
-    total: "Rp. 45.000,00",
-    statusPembayaran: "Lunas",
-    statusPesanan: "Menunggu Proses",
-    resi: "JN231334546"
-  }
-];
-
 const Pesanan = () => {
   const navigate = useNavigate();
-  const [pesanan, setPesanan] = useState(dummyPesanan);
+  const [pesanan, setPesanan] = useState([]);
   const [dropdownIdx, setDropdownIdx] = useState(null);
 
-  const handleStatusUpdate = (idx, status) => {
-    setPesanan(prev => prev.map((p, i) => i === idx ? { ...p, statusPesanan: status } : p));
+  const statusMap = {
+    "Diproses": "processing",
+    "Kirim Pesanan": "shipped",
+    "Batalkan": "cancelled"
+  };
+
+  useEffect(() => {
+    // Ambil data pesanan dari backend
+    const fetchOrders = async () => {
+      try {
+        const data = await orderAPI.getAllOrders(); // Ganti ke getAllOrders untuk admin
+        setPesanan(data);
+      } catch (err) {
+        alert("Gagal mengambil data pesanan");
+      }
+    };
+    fetchOrders();
+  }, []);
+
+  const handleStatusUpdate = async (idx, statusLabel) => {
+    const orderId = pesanan[idx].id;
+    const status = statusMap[statusLabel] || statusLabel;
+    try {
+      await orderAPI.updateOrderStatus(orderId, status);
+      setPesanan(prev => prev.map((p, i) => i === idx ? { ...p, order_status: status } : p));
+    } catch (err) {
+      alert('Gagal update status pesanan');
+    }
     setDropdownIdx(null);
-    // Simpan status ke localStorage
     localStorage.setItem('statusPesananTerakhir', status);
   };
 
@@ -52,7 +65,13 @@ const Pesanan = () => {
             <img src={logoNusaKoko} alt="Logo" style={{ width: 64, height: 64, objectFit: 'contain', borderRadius: '50%' }} />
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-            <div style={{ fontWeight: 700, fontSize: 28, color: "#222", lineHeight: 1 }}>Dashboard Admin NusaKoko</div>
+            <div
+              style={{ fontWeight: 700, fontSize: 28, color: "#222", lineHeight: 1, cursor: 'pointer' }}
+              onClick={() => navigate('/admin')}
+              title="Ke Dashboard Admin"
+            >
+              Dashboard Admin NusaKoko
+            </div>
             <div style={{ color: "#222", fontSize: 20, marginTop: 2 }}>{getTanggalIndo()}</div>
           </div>
         </div>
@@ -117,12 +136,12 @@ const Pesanan = () => {
                   {pesanan.map((p, idx) => (
                     <tr key={p.id} style={{ background: '#e9dbc7', color: '#4E342E', fontWeight: 500 }}>
                       <td style={{ padding: '14px 8px', borderRight: '2px solid #4E342E', borderBottom: '1.5px solid #4E342E', textAlign: 'left' }}>{p.id}</td>
-                      <td style={{ padding: '14px 8px', borderRight: '2px solid #4E342E', borderBottom: '1.5px solid #4E342E', textAlign: 'left' }}>{p.tanggal}</td>
-                      <td style={{ padding: '14px 8px', borderRight: '2px solid #4E342E', borderBottom: '1.5px solid #4E342E', textAlign: 'left' }}>{p.pelanggan}</td>
-                      <td style={{ padding: '14px 8px', borderRight: '2px solid #4E342E', borderBottom: '1.5px solid #4E342E', textAlign: 'left' }}>{p.produk}</td>
-                      <td style={{ padding: '14px 8px', borderRight: '2px solid #4E342E', borderBottom: '1.5px solid #4E342E', textAlign: 'left' }}>{p.total}</td>
-                      <td style={{ padding: '14px 8px', borderRight: '2px solid #4E342E', borderBottom: '1.5px solid #4E342E', textAlign: 'left' }}>{p.statusPembayaran}</td>
-                      <td style={{ padding: '14px 8px', borderRight: '2px solid #4E342E', borderBottom: '1.5px solid #4E342E', textAlign: 'left' }}>{p.statusPesanan}</td>
+                      <td style={{ padding: '14px 8px', borderRight: '2px solid #4E342E', borderBottom: '1.5px solid #4E342E', textAlign: 'left' }}>{p.tanggal || p.created_at || p.date}</td>
+                      <td style={{ padding: '14px 8px', borderRight: '2px solid #4E342E', borderBottom: '1.5px solid #4E342E', textAlign: 'left' }}>{p.pelanggan || p.user || p.username || p.customer_name}</td>
+                      <td style={{ padding: '14px 8px', borderRight: '2px solid #4E342E', borderBottom: '1.5px solid #4E342E', textAlign: 'left' }}>{p.produk || p.product_name || (p.items && p.items[0]?.name)}</td>
+                      <td style={{ padding: '14px 8px', borderRight: '2px solid #4E342E', borderBottom: '1.5px solid #4E342E', textAlign: 'left' }}>{p.total || p.total_amount || p.total_bayar || 0}</td>
+                      <td style={{ padding: '14px 8px', borderRight: '2px solid #4E342E', borderBottom: '1.5px solid #4E342E', textAlign: 'left' }}>{p.payment_status || p.statusPembayaran || ''}</td>
+                      <td style={{ padding: '14px 8px', borderRight: '2px solid #4E342E', borderBottom: '1.5px solid #4E342E', textAlign: 'left' }}>{p.order_status || p.statusPesanan || ''}</td>
                       <td style={{ padding: '14px 8px', borderBottom: '1.5px solid #4E342E', textAlign: 'left' }}>
                         <div style={{ position: 'relative', display: 'inline-block' }}>
                           <button style={{ background: '#7ba05b', border: 'none', borderRadius: 8, width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }} title="Edit Status" onClick={() => setDropdownIdx(dropdownIdx === idx ? null : idx)}>
@@ -146,13 +165,7 @@ const Pesanan = () => {
                             </div>
                           )}
                         </div>
-                        <button
-                          style={{ marginLeft: 8, background: '#4E342E', color: '#fff', border: 'none', borderRadius: 6, padding: '6px 12px', cursor: 'pointer' }}
-                          onClick={() => navigate('/informasi-pesanan')}
-                        >
-                          Lihat Detail
-                        </button>
-                        <span style={{ color: '#4E342E', fontWeight: 500, fontSize: 16, marginLeft: 8 }}>No. Resi : {p.resi}</span>
+                        <span style={{ color: '#4E342E', fontWeight: 500, fontSize: 16, marginLeft: 8 }}>No. Resi : {p.order_number}</span>
                       </td>
                     </tr>
                   ))}

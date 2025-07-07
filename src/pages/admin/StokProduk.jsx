@@ -61,7 +61,13 @@ const StokProduk = () => {
             <img src={logoNusaKoko} alt="Logo" style={{ width: 64, height: 64, objectFit: 'contain', borderRadius: '50%' }} />
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-            <div style={{ fontWeight: 700, fontSize: 28, color: "#222", lineHeight: 1 }}>Dashboard Admin NusaKoko</div>
+            <div
+              style={{ fontWeight: 700, fontSize: 28, color: "#222", lineHeight: 1, cursor: 'pointer' }}
+              onClick={() => navigate('/admin')}
+              title="Ke Dashboard Admin"
+            >
+              Dashboard Admin NusaKoko
+            </div>
             <div style={{ color: "#222", fontSize: 20, marginTop: 2 }}>{getTanggalIndo()}</div>
           </div>
         </div>

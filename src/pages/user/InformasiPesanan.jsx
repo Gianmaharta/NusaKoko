@@ -106,7 +106,7 @@ export default function InformasiPesanan() {
       <div style={{ flex: 1, padding: '0 0 40px 0', background: '#4E342E' }}>
         <div style={{ padding: '48px 0 0 0', maxWidth: 1200, margin: '0 auto' }}>
           <h1 style={{ color: 'white', fontWeight: 700, fontSize: 40, marginBottom: 32, textAlign: 'center' }}>
-            Informasi Pesanan #{orderDetails.order_number}
+            Informasi Pesanan 
           </h1>
           <div style={{ background: '#E5D6C5', borderRadius: 16, padding: '32px 40px', marginBottom: 32, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
@@ -115,7 +115,7 @@ export default function InformasiPesanan() {
             </div>
             {!isBatal && (
               <div style={{ color: '#5B4036', fontSize: 22, fontWeight: 500 }}>
-                No. Resi: <strong>{orderDetails.tracking_number || '-'}</strong>
+                No. Resi: <strong>{orderDetails.order_number || '-'}</strong>
               </div>
             )}
           </div>

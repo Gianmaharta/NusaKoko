@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logoNusaKoko from "../../assets/logo-nusakoko.png";
+import { orderAPI } from "../../services/apiService";
 //test
 // Helper untuk format tanggal Indonesia
 const hariIndo = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
@@ -15,9 +16,72 @@ function getTanggalIndo() {
 
 const DashboardAdmin = () => {
   const navigate = useNavigate();
-  // Dummy data
-  const salesData = [5, 7, 6, 8, 4, 2, 1];
+  const [salesData, setSalesData] = useState([0,0,0,0,0,0,0]);
+  const [topProducts, setTopProducts] = useState([]);
   const days = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
+  const [weekStats, setWeekStats] = useState({ count: 0, total: 0 });
+
+  useEffect(() => {
+    // Ambil data order dari backend
+    const fetchOrders = async () => {
+      try {
+        const orders = await orderAPI.getAllOrders();
+        // Hitung jumlah order per hari (7 hari terakhir)
+        const now = new Date();
+        const counts = [0,0,0,0,0,0,0];
+        // Hitung produk terlaris minggu ini
+        const productCount = {};
+        // Statistik minggu ini
+        let weekCount = 0;
+        let weekTotal = 0;
+        orders.forEach(order => {
+          const tgl = new Date(order.tanggal || order.created_at);
+          const diff = Math.floor((now - tgl) / (1000*60*60*24));
+          const isPaid = order.payment_status === 'paid' || order.payment_status === 'PAID';
+          const isNotCancelled = order.order_status !== 'cancelled' && order.order_status !== 'CANCELLED';
+          // Statistik minggu ini: 7 hari terakhir, payment_status 'paid', dan order_status bukan 'cancelled'
+          if (
+            diff >= 0 && diff < 7 &&
+            isPaid &&
+            isNotCancelled
+          ) {
+            weekCount++;
+            weekTotal += Number(order.total_bayar || order.total_amount || 0);
+          }
+          // Grafik penjualan: hanya order paid (abaikan cancelled)
+          if (diff >= 0 && diff < 7 && isPaid) {
+            const dayIdx = (tgl.getDay() + 6) % 7; // Senin=0, Minggu=6
+            counts[dayIdx]++;
+          }
+          // Produk terlaris minggu ini: hanya order paid & bukan cancelled
+          if (diff >= 0 && diff < 7 && isPaid && isNotCancelled) {
+            if (order.items && Array.isArray(order.items)) {
+              order.items.forEach(item => {
+                if (!productCount[item.name]) productCount[item.name] = 0;
+                productCount[item.name] += item.quantity || 1;
+              });
+            } else if (order.produk) {
+              if (!productCount[order.produk]) productCount[order.produk] = 0;
+              productCount[order.produk] += 1;
+            }
+          }
+        });
+        setSalesData(counts);
+        // Urutkan dan ambil top 3
+        const top = Object.entries(productCount)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 3);
+        setTopProducts(top);
+        setWeekStats({ count: weekCount, total: weekTotal });
+      } catch (err) {
+        // fallback dummy jika gagal
+        setSalesData([5,7,6,8,4,2,1]);
+        setTopProducts([]);
+        setWeekStats({ count: 0, total: 0 });
+      }
+    };
+    fetchOrders();
+  }, []);
 
   // Fungsi tombol
   const handlePesanan = () => {
@@ -90,11 +154,11 @@ const DashboardAdmin = () => {
           overflow: 'visible',
           paddingRight: 32,
         }}>
-          {/* Statistik Hari Ini */}
+          {/* Statistik Minggu Ini */}
           <div style={{ background: "#4E342E", color: "#fff", borderRadius: 16, boxShadow: "0 6px #7ba05b", padding: 32, textAlign: 'left', gridColumn: '1/2', gridRow: '1/2', display: 'flex', flexDirection: 'column', justifyContent: 'center', marginBottom: 0 }}>
-            <div style={{ fontSize: 22, marginBottom: 12 }}>Statistik hari ini</div>
-            <div style={{ fontSize: 20, marginBottom: 4 }}>5 pesanan masuk</div>
-            <div style={{ fontSize: 20 }}>Total Penjualan: Rp 500.000</div>
+            <div style={{ fontSize: 22, marginBottom: 12 }}>Statistik Minggu Ini</div>
+            <div style={{ fontSize: 20, marginBottom: 4 }}>{weekStats.count} pesanan masuk</div>
+            <div style={{ fontSize: 20 }}>Total Penjualan: Rp {weekStats.total.toLocaleString('id-ID')}</div>
           </div>
 
           {/* Daftar Tugas Prioritas */}
@@ -171,13 +235,14 @@ const DashboardAdmin = () => {
             </ul>
           </div>
 
-          {/* Produk Terlaris Bulan Ini */}
+          {/* Produk Terlaris Minggu Ini */}
           <div style={{ background: "#4E342E", color: "#fff", borderRadius: 16, boxShadow: "0 6px #7ba05b", padding: 32, textAlign: 'left', gridColumn: '2/3', gridRow: '3/4', minHeight: 120, display: 'flex', flexDirection: 'column', justifyContent: 'center', marginBottom: 0 }}>
-            <div style={{ fontSize: 22, marginBottom: 12 }}>Produk Terlaris Bulan Ini</div>
+            <div style={{ fontSize: 22, marginBottom: 12 }}>Produk Terlaris Minggu Ini</div>
             <ol style={{ fontSize: 18, margin: 0, paddingLeft: 20 }}>
-              <li>Mangkuk (200 pcs)</li>
-              <li>Gelas (190 pcs)</li>
-              <li>Piring (100 pcs)</li>
+              {topProducts.length === 0 && <li>Tidak ada data</li>}
+              {topProducts.map(([name, qty], idx) => (
+                <li key={name}>{name} ({qty} pcs)</li>
+              ))}
             </ol>
           </div>
         </div>

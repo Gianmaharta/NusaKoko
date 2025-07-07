@@ -178,7 +178,22 @@ export const orderAPI = {
   getMyOrders: async () => {
     const response = await api.get('/api/nusakoko/orders/my-orders');
     return response.data;
-  }
+  },
+
+  updatePaymentStatus: async (orderId, status) => {
+    const response = await api.put(`/api/nusakoko/orders/${orderId}/payment-status`, { payment_status: status });
+    return response.data;
+  },
+
+  getAllOrders: async () => {
+    const response = await api.get('/api/nusakoko/orders/');
+    return response.data;
+  },
+
+  updateOrderStatus: async (orderId, status) => {
+    const response = await api.put(`/api/nusakoko/orders/${orderId}/order-status`, { order_status: status });
+    return response.data;
+  },
 };
 
 // Health check (jika masih digunakan)
