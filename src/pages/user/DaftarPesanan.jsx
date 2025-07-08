@@ -55,7 +55,7 @@ const OrderCard = ({ order }) => {
         <span style={getStatusStyle(order.order_status)}>{order.order_status}</span>
       </div>
       <div style={{ fontSize: '16px', color: '#6D4C41' }}>
-        Tanggal: {new Date(order.tanggal).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })}
+        Tanggal: {new Date(order.tanggal).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric', timeZone: 'UTC'})}
       </div>
       <div style={{ borderTop: '1px solid #D7CCC8', paddingTop: '12px' }}>
         <p style={{ margin: 0, fontWeight: 500 }}>Produk: {order.produk || '-'}</p>
