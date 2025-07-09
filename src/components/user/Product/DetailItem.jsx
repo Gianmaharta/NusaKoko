@@ -5,6 +5,7 @@ import Navbar from "../Navbar";
 import Footer from "../Footer";
 import { useCart } from '../../../context/CartContext';
 import { cartAPI } from "../../../services/apiService"; // Impor cartAPI
+import BackButton from '../BackButton'; // Path mungkin berbeda
 
 const { Content } = Layout;
 const { Title, Paragraph } = Typography;
@@ -75,6 +76,14 @@ const DetailItem = () => {
     <Layout style={{ minHeight: "100vh", backgroundColor: "#D7CCC8" }}>
       <Navbar />
       <Content style={{ padding: "40px", backgroundColor: "#4E342E" }}>
+        <div style={{ 
+          maxWidth: '1200px', // Atur lebar maksimal konten
+          margin: '0',    // Ini akan membuat kontainer berada di tengah
+          width: '90%',        // Lebar relatif
+          textAlign: 'left'  // Pastikan semua isinya mulai dari kiri
+        }}>
+          <BackButton />
+        </div>
         <div
           style={{
             display: "flex",

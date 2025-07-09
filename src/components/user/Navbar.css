@@ -12,3 +12,7 @@
 .custom-navbar-menu .ant-menu-item:hover {
   color: #8B5E3C !important;
 }
+
+.search-result-item:hover {
+  background-color: #E8D8C3;
+}

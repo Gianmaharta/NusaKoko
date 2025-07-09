@@ -2,22 +2,17 @@ import React, { useState, useEffect } from 'react';
 import './Home.css';
 import { Layout, Typography, FloatButton, Row, Col, Modal, message, notification } from 'antd';
 import { useNavigate } from "react-router-dom";
-
 import Navbar from '../../components/user/Navbar';
 import Footer from '../../components/user/Footer';
 import ContactSection from '../../components/user/ContactSection/ContactSection';
 import ProductCardHorizontal from '../../components/user/ProductCardHorizontal';
-import ProductCard from '../../components/user/Product/ProductCard'; // komponen produk vertikal
 import ProductList from '../../components/user/Product/ProductList';
 import AboutSection from '../../components/user/AboutSection/AboutSection';
 import Login from '../Login'; // Pastikan path sesuai struktur folder Anda
 import { productAPI } from '../../services/apiService';
-
 import dashboardImage from '../../assets/dashboard-image.png';
-import bagImage from '../../assets/bag.png';
-import bowlImage from '../../assets/bowl.png';
 import mangkokImage from '../../assets/mangkok.png';
-import foodPlasticImage from '../../assets/food-plastic.png';
+import { useLocation } from "react-router-dom";
 
 const { Content } = Layout;
 const { Title, Paragraph } = Typography;
@@ -30,6 +25,7 @@ const Home = () => {
   const [redirectAfterLogin, setRedirectAfterLogin] = useState(null);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const location = useLocation();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -52,6 +48,20 @@ const Home = () => {
     };
     fetchProducts();
   }, []);
+
+  useEffect(() => {
+      // Cek apakah ada hash di URL (misal: /#pembelian)
+      if (location.hash) {
+          const id = location.hash.replace('#', '');
+          const element = document.getElementById(id);
+          if (element) {
+              // Beri sedikit jeda agar komponen sempat ter-render
+              setTimeout(() => {
+                  element.scrollIntoView({ behavior: 'smooth' });
+              }, 100);
+          }
+      }
+  }, [location]);
 
   const handleAvatarClick = () => {
     const token = localStorage.getItem("token");

@@ -5,7 +5,8 @@ import Footer from '../../components/user/Footer';
 import '../../App.css';
 import { useCart } from '../../context/CartContext';
 import { useNavigate } from "react-router-dom";
-import { cartAPI } from '../../services/apiService'; // Pastikan path impor ini benar
+import { cartAPI } from '../../services/apiService';
+import BackButton from '../../components/user/BackButton';
 
 const { Content } = Layout;
 
@@ -82,6 +83,13 @@ export default function Keranjang() {
       <Navbar />
       <Content style={{ background: '#5B4036', paddingBottom: 40, minHeight: '100vh' }}>
         <div style={{ width: '100vw', padding: '32px 24px' }}>
+          <div style={{ 
+            maxWidth: '1200px', // Atur lebar maksimal konten
+            margin: '0',    // Ini akan membuat kontainer berada di tengah
+            width: '90%',        // Lebar relatif
+            textAlign: 'left'  // Pastikan semua isinya mulai dari kiri
+            }}><BackButton />
+          </div>
           <h1 style={{ color: 'white', fontWeight: 700, fontSize: 40, marginBottom: 32, textAlign: 'center' }}>Keranjang</h1>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 32, alignItems: 'flex-start' }}>
             <div style={{ flex: 2, minWidth: 0 }}>

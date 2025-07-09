@@ -3,16 +3,13 @@ import { Layout, Radio } from 'antd';
 import Navbar from '../../components/user/Navbar';
 import Footer from '../../components/user/Footer';
 import { useCart } from '../../context/CartContext';
-import bagImage from '../../assets/bag.png';
-import foodPlasticImage from '../../assets/food-plastic.png';
-import bowlImage from '../../assets/bowl.png';
 import shopeepay from '../../assets/shopeepay.png';
 import gopay from '../../assets/gopay.png';
 import dana from '../../assets/dana.png';
 import ovo from '../../assets/ovo.png';
-import { CheckCircleFilled } from '@ant-design/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { userAPI, orderAPI } from '../../services/apiService';
+import BackButton from '../../components/user/BackButton';
 
 const { Content } = Layout;
 
@@ -138,6 +135,14 @@ export default function Checkout() {
       <Navbar />
       <Content style={{ background: '#5B4036', paddingBottom: 40, minHeight: '100vh' }}>
         <div style={{ width: '100vw', padding: '32px 24px' }}>
+          <div style={{
+            maxWidth: '1200px', // Atur lebar maksimal konten
+            margin: '0',    // Ini akan membuat kontainer berada di tengah
+            width: '90%',        // Lebar relatif
+            textAlign: 'left'  // Pastikan semua isinya mulai dari kiri
+              }}>
+            <BackButton />
+          </div>
           <h1 style={{ color: 'white', fontWeight: 700, fontSize: 40, marginBottom: 32 }}>Checkout</h1>
           <div style={{ display: 'flex', gap: 32, alignItems: 'flex-start' }}>
             <div style={{ flex: 2 }}>

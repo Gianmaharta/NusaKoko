@@ -22,11 +22,13 @@ export const productAPI = {
   },
   
   searchProducts: async (query) => {
+    if (!query) return []; // Jika query kosong, kembalikan array kosong
     try {
-      const response = await api.get(`/api/nusakoko/products/search?q=${encodeURIComponent(query)}`);
+      const response = await api.get(`/api/nusakoko/products/search?q=${query}`);
       return response.data;
     } catch (error) {
-      throw error;
+      console.error("Error searching products:", error);
+      return [];
     }
   },
 
@@ -147,6 +149,7 @@ export const userAPI = {
     const formData = new FormData();
     if (data.username) formData.append('username', data.username);
     if (data.address) formData.append('address', data.address);
+    if (data.email) formData.append('email', data.email);
     if (data.profile_photo) formData.append('profile_photo', data.profile_photo);
     const response = await api.put('/api/nusakoko/auth/profile', formData);
     return response.data;

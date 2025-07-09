@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import Navbar from '../../components/user/Navbar';
 import Footer from '../../components/user/Footer';
 import { orderAPI } from '../../services/apiService';
+import BackButton from '../../components/user/BackButton';
 
 // SVG icons
 const DikemasIcon = () => (
@@ -105,6 +106,13 @@ export default function InformasiPesanan() {
       <Navbar />
       <div style={{ flex: 1, padding: '0 0 40px 0', background: '#4E342E' }}>
         <div style={{ padding: '48px 0 0 0', maxWidth: 1200, margin: '0 auto' }}>
+          <div style={{ 
+            maxWidth: '1200px', // Atur lebar maksimal konten
+            margin: '0',    // Ini akan membuat kontainer berada di tengah
+            width: '90%',        // Lebar relatif
+            textAlign: 'left'  // Pastikan semua isinya mulai dari kiri
+            }}><BackButton />
+          </div>
           <h1 style={{ color: 'white', fontWeight: 700, fontSize: 40, marginBottom: 32, textAlign: 'center' }}>
             Informasi Pesanan 
           </h1>

@@ -1,18 +1,23 @@
 // src/pages/user/Profile/ProfileUser.jsx
 import React, { useState, useEffect } from 'react';
-import { Button, Upload, Typography, Layout, Card, Drawer, Input, message } from 'antd';
+// --- PERUBAHAN 1: Impor 'notification' dan hapus 'message' ---
+import { Button, Upload, Typography, Layout, Card, Drawer, Input, notification } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import Navbar from '../../../components/user/Navbar';
 import Footer from '../../../components/user/Footer';
 import './ProfileUser.css';
 import defaultProfileImage from '../../../assets/default-user.jpg';
 import { userAPI } from '../../../services/apiService';
+import BackButton from '../../../components/user/BackButton';
 
 const { Content } = Layout;
 const { TextArea } = Input;
 const { Title, Text } = Typography;
 
 const ProfileUser = () => {
+  // --- PERUBAHAN 2: Inisialisasi hook notification ---
+  const [api, contextHolder] = notification.useNotification();
+
   const [imageUrl, setImageUrl] = useState(null);
   const [profilePhotoFile, setProfilePhotoFile] = useState(null);
   const [nama, setNama] = useState('');
@@ -38,58 +43,87 @@ const ProfileUser = () => {
         setAlamat(data.address || '');
         setImageUrl(data.profile_photo_url || null);
       } catch (err) {
-        message.error('Gagal mengambil data profil');
+        // --- PERUBAHAN 3: Ganti 'message' dengan 'api' dari notification ---
+        api.error({
+          message: 'Gagal Mengambil Profil',
+          description: 'Terjadi kesalahan saat memuat data profil Anda.',
+          placement: 'topRight',
+        });
       }
     };
     fetchProfile();
-  }, []);
+  }, [api]); // Tambahkan 'api' sebagai dependency
 
   const handleSaveNama = async () => {
     if (inputNama.trim().length === 0) {
-      message.error('Nama tidak boleh kosong.');
+      api.error({ message: 'Nama tidak boleh kosong.', placement: 'topRight' });
       return;
     }
     try {
       await userAPI.updateProfile({ username: inputNama });
       setNama(inputNama.trim());
       setDrawerNamaOpen(false);
-      message.success('Nama berhasil diupdate!');
+      api.success({ message: 'Nama berhasil diupdate!', placement: 'topRight' });
     } catch (err) {
-      message.error('Gagal update nama');
+      api.error({ message: 'Gagal update nama', description: err.response?.data?.error || 'Silakan coba lagi.', placement: 'topRight' });
     }
   };
 
   const handleSaveAlamat = async () => {
     if (inputAlamat.trim().length === 0) {
-      message.error('Alamat tidak boleh kosong.');
+      api.error({ message: 'Alamat tidak boleh kosong.', placement: 'topRight' });
       return;
     }
     try {
       await userAPI.updateProfile({ address: inputAlamat });
       setAlamat(inputAlamat.trim());
       setDrawerAlamatOpen(false);
-      message.success('Alamat berhasil diupdate!');
+      api.success({ message: 'Alamat berhasil diupdate!', placement: 'topRight' });
     } catch (err) {
-      message.error('Gagal update alamat');
+      api.error({ message: 'Gagal update alamat', description: err.response?.data?.error || 'Silakan coba lagi.', placement: 'topRight' });
     }
   };
 
-  const handleSaveEmail = () => {
-    // Email tidak bisa diupdate karena backend tidak support
-    setDrawerEmailOpen(false);
-    message.info('Email tidak dapat diubah.');
-  };
+  const handleSaveEmail = async () => {
+      // Tambahkan validasi sederhana untuk email
+      if (!inputEmail.includes('@') || inputEmail.trim().length === 0) {
+          api.error({ 
+              message: 'Format email tidak valid', 
+              placement: 'topRight' 
+          });
+          return;
+      }
+      try {
+          // Panggil API untuk update email
+          await userAPI.updateProfile({ email: inputEmail });
+          // Update state lokal jika berhasil
+          setEmail(inputEmail.trim());
+          setDrawerEmailOpen(false);
+          // Tampilkan notifikasi sukses
+          api.success({ 
+              message: 'Email berhasil diupdate!', 
+              placement: 'topRight' 
+          });
+      } catch (err) {
+          // Tampilkan notifikasi jika gagal (misal: email sudah digunakan)
+          api.error({ 
+              message: 'Gagal update email', 
+              description: err.response?.data?.error || 'Silakan coba lagi.', 
+              placement: 'topRight' 
+          });
+      }
+    };
 
   const props = {
     beforeUpload: (file) => {
       const isImage = file.type.startsWith('image/');
       const isLt10M = file.size / 1024 / 1024 < 10;
       if (!isImage) {
-        alert('Hanya gambar yang diperbolehkan!');
+        api.error({ message: 'Hanya file gambar yang diperbolehkan!', placement: 'topRight' });
         return Upload.LIST_IGNORE;
       }
       if (!isLt10M) {
-        alert('Ukuran file terlalu besar (maks 10MB)');
+        api.error({ message: 'Ukuran file terlalu besar (maks 10MB)', placement: 'topRight' });
         return Upload.LIST_IGNORE;
       }
       const reader = new FileReader();
@@ -98,7 +132,6 @@ const ProfileUser = () => {
       };
       reader.readAsDataURL(file);
       setProfilePhotoFile(file);
-      // Upload langsung ke backend
       handleUploadPhoto(file);
       return false;
     },
@@ -108,16 +141,26 @@ const ProfileUser = () => {
   const handleUploadPhoto = async (file) => {
     try {
       await userAPI.updateProfile({ profile_photo: file });
-      message.success('Foto profil berhasil diupdate!');
+      api.success({ message: 'Foto profil berhasil diupdate!', placement: 'topRight' });
     } catch (err) {
-      message.error('Gagal update foto profil');
+      api.error({ message: 'Gagal update foto profil', placement: 'topRight' });
     }
   };
 
   return (
     <Layout className="profile-layout">
+      {/* --- PERUBAHAN 4: Tempatkan contextHolder di sini --- */}
+      {contextHolder}
       <Navbar />
       <Content className="profile-content">
+        <div style={{ 
+          maxWidth: '1200px', // Atur lebar maksimal konten
+          margin: '0 6.5vw',    // Ini akan membuat kontainer berada di tengah
+          width: '90%',        // Lebar relatif
+          textAlign: 'left'  // Pastikan semua isinya mulai dari kiri
+        }}>
+          <BackButton />
+        </div>
         <div className="section-wrapper">
           <div className="section-container profile-card">
             <div className="profile-left">
