@@ -12,12 +12,12 @@ const ProductCardHorizontal = ({ imageSrc, title, description }) => {
     }}>
       <div style={{ flex: '0 0 220px' }}>
         <img
-          src={imageSrc} // <- pastikan ini sudah benar
+          src={imageSrc} 
           alt={title}
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         />
       </div>
-      <div style={{ padding: '24px', flex: 1 }}>
+      <div style={{ padding: '24px', flex: 1, textAlign: 'left' }}>
         <h2 style={{
           marginBottom: '12px',
           color: '#4E342E',

@@ -94,8 +94,6 @@ export default function Checkout() {
         items_json: JSON.stringify(items)
       });
 
-      // --- PERUBAHAN DIMULAI DARI SINI ---
-
       // Cek apakah order berhasil dibuat dan kita mendapat order_id
       if (res && res.order_id) {
           // 1. Tampilkan notifikasi sukses
