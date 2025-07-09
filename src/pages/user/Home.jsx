@@ -180,6 +180,7 @@ const Home = () => {
                   products={products.slice(0, 3)} 
                   onShowLoginModal={() => setLoginModalVisible(true)}
                   loading={loading}
+                  gutterSize={[80, 56]}
                 />
 
                 <div style={{ textAlign: 'center', marginTop: '24px' }}>
