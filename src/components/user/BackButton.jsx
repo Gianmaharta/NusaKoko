@@ -3,12 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 
 // Komponen tombol kembali yang bisa dipakai ulang
-const BackButton = () => {
+const BackButton = ({ destination, label = 'Kembali' }) => {
   const navigate = useNavigate();
 
   return (
     <button
-      onClick={() => navigate('/produk')}
+      onClick={() => {
+        if (destination) {
+          navigate(destination);
+        } else {
+          navigate(-1);
+        }
+      }}
       style={{
         display: 'inline-flex', // Menggunakan inline-flex agar ukurannya pas
         alignItems: 'center',
@@ -29,7 +35,7 @@ const BackButton = () => {
       onMouseOut={(e) => e.currentTarget.style.background = 'rgba(229, 214, 197, 0.2)'}
     >
       <ArrowLeftOutlined />
-      Kembali ke Produk
+      {label}
     </button>
   );
 };

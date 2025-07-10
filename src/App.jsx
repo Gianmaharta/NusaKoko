@@ -18,6 +18,7 @@ import EditProduk from "./pages/admin/EditProduk";
 import InformasiPesanan from './pages/user/InformasiPesanan';
 import ProfilePage from './pages/user/Profile/ProfileUser';
 import DaftarPesanan from './pages/user/DaftarPesanan';
+import ProfileAdmin from './pages/admin/Profile/ProfileAdmin';
 
 import "antd/dist/reset.css";
 import { CartProvider } from "./context/CartContext";
@@ -95,6 +96,14 @@ function App() {
               element={
                 <PrivateRoute allowedRoles={["admin"]}>
                   <Pesanan />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/admin/profile"
+              element={
+                <PrivateRoute allowedRoles={["admin"]}>
+                  <ProfileAdmin />
                 </PrivateRoute>
               }
             />

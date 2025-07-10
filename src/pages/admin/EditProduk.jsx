@@ -85,7 +85,12 @@ const EditProduk = () => {
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 24, marginRight: 32 }}>
-          <div style={{ width: 56, height: 56, borderRadius: '50%', background: '#4E342E', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          {/* Button Profil */}
+          <button
+            onClick={() => navigate('/admin/profile')}
+            style={{ width: 56, height: 56, borderRadius: '50%', background: '#4E342E', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer' }}
+            title="Profil Admin"
+          >
             <span role="img" aria-label="user" style={{ color: '#fff', fontSize: 32 }}>
               <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
                 <circle cx="16" cy="16" r="16" fill="#4E342E" />
@@ -93,7 +98,8 @@ const EditProduk = () => {
                 <ellipse cx="16" cy="24" rx="9" ry="7" fill="#f5e7d6" />
               </svg>
             </span>
-          </div>
+          </button>
+          {/* Button Logout */}
           <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
               <path d="M20 24V26C20 27.1046 19.1046 28 18 28H8C6.89543 28 6 27.1046 6 26V6C6 4.89543 6.89543 4 8 4H18C19.1046 4 20 4.89543 20 6V8" stroke="#222" strokeWidth="2.5" strokeLinecap="round"/>

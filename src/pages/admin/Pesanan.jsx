@@ -17,6 +17,7 @@ const Pesanan = () => {
   const navigate = useNavigate();
   const [pesanan, setPesanan] = useState([]);
   const [dropdownIdx, setDropdownIdx] = useState(null);
+  const [search, setSearch] = useState("");
 
   const statusMap = {
     "Diproses": "processing",
@@ -36,6 +37,14 @@ const Pesanan = () => {
     };
     fetchOrders();
   }, []);
+
+  // Filter pesanan berdasarkan search (nama pelanggan atau no resi)
+  const filteredPesanan = pesanan.filter((p) => {
+    const q = search.toLowerCase();
+    const nama = (p.pelanggan || p.user || p.username || p.customer_name || "").toLowerCase();
+    const resi = (p.order_number || "").toLowerCase();
+    return nama.includes(q) || resi.includes(q);
+  });
 
   const handleStatusUpdate = async (idx, statusLabel) => {
     const orderId = pesanan[idx].id;
@@ -76,7 +85,12 @@ const Pesanan = () => {
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 24, marginRight: 32 }}>
-          <div style={{ width: 56, height: 56, borderRadius: '50%', background: '#4E342E', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          {/* Button Profil */}
+          <button
+            onClick={() => navigate('/admin/profile')}
+            style={{ width: 56, height: 56, borderRadius: '50%', background: '#4E342E', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer' }}
+            title="Profil Admin"
+          >
             <span role="img" aria-label="user" style={{ color: '#fff', fontSize: 32 }}>
               <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
                 <circle cx="16" cy="16" r="16" fill="#4E342E" />
@@ -84,7 +98,8 @@ const Pesanan = () => {
                 <ellipse cx="16" cy="24" rx="9" ry="7" fill="#f5e7d6" />
               </svg>
             </span>
-          </div>
+          </button>
+          {/* Button Logout */}
           <button
             onClick={handleLogout}
             style={{ width: 72, height: 72, borderRadius: '50%', background: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', border: 'none' }}
@@ -111,7 +126,13 @@ const Pesanan = () => {
             {/* Search Bar */}
             <div style={{ width: '96%', background: '#e9dbc7', borderRadius: 20, padding: '18px 0', marginBottom: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(99,54,4,0.06)' }}>
               <div style={{ width: '60%', position: 'relative' }}>
-                <input type="text" placeholder="Cari pesanan..." style={{ width: '100%', padding: '14px 22px', borderRadius: 18, border: 'none', fontSize: 22, background: '#4E342E', color: '#fff', outline: 'none', fontWeight: 400 }} />
+                <input
+                  type="text"
+                  placeholder="Cari pesanan berdasarkan nama pelanggan atau no. resi..."
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                  style={{ width: '100%', padding: '14px 22px', borderRadius: 18, border: 'none', fontSize: 22, background: '#4E342E', color: '#fff', outline: 'none', fontWeight: 400 }}
+                />
                 <span style={{ position: 'absolute', right: 18, top: '50%', transform: 'translateY(-50%)', color: '#fff', pointerEvents: 'none' }}>
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" strokeWidth="2.5"/><path d="M20 20L16.65 16.65" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"/></svg>
                 </span>
@@ -133,7 +154,7 @@ const Pesanan = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {pesanan.map((p, idx) => (
+                  {filteredPesanan.map((p, idx) => (
                     <tr key={p.id} style={{ background: '#e9dbc7', color: '#4E342E', fontWeight: 500 }}>
                       <td style={{ padding: '14px 8px', borderRight: '2px solid #4E342E', borderBottom: '1.5px solid #4E342E', textAlign: 'left' }}>{p.id}</td>
                       <td style={{ padding: '14px 8px', borderRight: '2px solid #4E342E', borderBottom: '1.5px solid #4E342E', textAlign: 'left' }}>{p.tanggal || p.created_at || p.date}</td>
