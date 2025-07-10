@@ -110,7 +110,12 @@ const DashboardAdmin = () => {
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 24, marginRight: 32 }}>
-          <div style={{ width: 56, height: 56, borderRadius: '50%', background: '#4E342E', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          {/* Button Profil */}
+          <button
+            onClick={() => navigate('/admin/profile')}
+            style={{ width: 56, height: 56, borderRadius: '50%', background: '#4E342E', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer' }}
+            title="Profil Admin"
+          >
             <span role="img" aria-label="user" style={{ color: '#fff', fontSize: 32 }}>
               <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
                 <circle cx="16" cy="16" r="16" fill="#4E342E" />
@@ -118,7 +123,8 @@ const DashboardAdmin = () => {
                 <ellipse cx="16" cy="24" rx="9" ry="7" fill="#f5e7d6" />
               </svg>
             </span>
-          </div>
+          </button>
+          {/* Button Logout */}
           <button
             onClick={handleLogout}
             style={{ width: 72, height: 72, borderRadius: '50%', background: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', border: 'none' }}
