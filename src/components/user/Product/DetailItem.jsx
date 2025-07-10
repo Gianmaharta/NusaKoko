@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+  import { useLocation, useNavigate } from "react-router-dom";
 import { Layout, Typography, Button, notification } from "antd"; // Impor notification
 import Navbar from "../Navbar";
 import Footer from "../Footer";
 import { useCart } from '../../../context/CartContext';
 import { cartAPI } from "../../../services/apiService"; // Impor cartAPI
+import { productAPI } from '../../../services/apiService';
 import BackButton from '../BackButton'; // Path mungkin berbeda
 
 const { Content } = Layout;
@@ -12,12 +13,55 @@ const { Title, Paragraph } = Typography;
 
 const DetailItem = () => {
   const { state } = useLocation();
-  const product = state?.product;
+  const productFromNav = state?.product;
   const navigate = useNavigate();
-  const { addToCartContext } = useCart(); // Ambil fungsi dari context
+  const { addToCartContext } = useCart();
 
+  const [product, setProduct] = useState(productFromNav || null);
   const [quantity, setQuantity] = useState(1);
-  const stok = product?.stock_quantity ?? 10;
+  const [loading, setLoading] = useState(false);
+
+  const productId = productFromNav?.id;
+
+  // Ambil data produk dari database jika ada id
+  useEffect(() => {
+    const fetchProduct = async () => {
+      if (productId) {
+        setLoading(true);
+        try {
+          const data = await productAPI.getProductById(productId);
+          console.log('Data produk hasil fetch:', data); // Debug
+          setProduct(data);
+        } catch (err) {
+          // handle error
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+    fetchProduct();
+  }, [productId]);
+
+  // Ambil stok dari hasil fetch (stock_quantity atau stock), default 10 jika tidak ada
+  const stok = product && typeof product.stock_quantity !== 'undefined'
+    ? product.stock_quantity
+    : (product && typeof product.stock !== 'undefined'
+      ? product.stock
+      : 10);
+
+  if (loading) {
+    return (
+      <Layout style={{ minHeight: "100vh", backgroundColor: "#D7CCC8" }}>
+        <Navbar />
+        <Content style={{ padding: "40px", backgroundColor: "#4E342E" }}>
+          <Title level={3} style={{ color: "white" }}>
+            Memuat data produk...
+          </Title>
+        </Content>
+        <Footer />
+      </Layout>
+    );
+  }
 
   if (!product) {
     return (
