@@ -10,6 +10,7 @@ import ovo from '../../assets/ovo.png';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { userAPI, orderAPI } from '../../services/apiService';
 import BackButton from '../../components/user/BackButton';
+import Swal from 'sweetalert2';
 
 const { Content } = Layout;
 
@@ -29,6 +30,7 @@ export default function Checkout() {
   const [showSuccess, setShowSuccess] = useState(false);
   const navigate = useNavigate();
   const [alamat, setAlamat] = useState('');
+  const [alamatError, setAlamatError] = useState('');
   const [editAlamat, setEditAlamat] = useState(false);
 
   useEffect(() => {
@@ -51,7 +53,10 @@ export default function Checkout() {
     fetchProfile();
   }, []);
 
-  const handleAlamatChange = (e) => setAlamat(e.target.value);
+  const handleAlamatChange = (e) => {
+    setAlamat(e.target.value);
+    if (alamatError) setAlamatError(""); // hapus error saat user mulai mengetik
+  };
 
   const handleAlamatSave = async () => {
     try {
@@ -70,6 +75,11 @@ export default function Checkout() {
 
   
   const handleBeli = async () => {
+    if (!alamat.trim()) {
+      setAlamatError("Silakan isi alamat pengiriman terlebih dahulu!");
+      return;
+    }
+    setAlamatError(""); // reset error jika sudah diisi
     try {
       const user_id = localStorage.getItem('user_id');
       const items = checkedCart.map(item => ({
@@ -148,8 +158,16 @@ export default function Checkout() {
                 <div style={{ fontWeight: 700, fontSize: 24, color: '#5B4036', marginBottom: 8 }}>ALAMAT PENGIRIMAN</div>
                 {editAlamat ? (
                   <>
-                    <textarea value={alamat} onChange={handleAlamatChange} />
-                    <button onClick={handleAlamatSave}>Simpan</button>
+                    <div className="alamat-row">
+                      <textarea value={alamat} onChange={handleAlamatChange} />
+                      <button onClick={handleAlamatSave} className="simpan-btn">Simpan</button>
+                    </div>
+                    {alamatError && (
+                      <div style={{ color: "#e74c3c", marginTop: "4px", display: "flex", alignItems: "center" }}>
+                        <span style={{ marginRight: "6px" }}>⚠️</span>
+                        <span>{alamatError}</span>
+                      </div>
+                    )}
                   </>
                 ) : (
                   <>

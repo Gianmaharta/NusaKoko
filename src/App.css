@@ -41,3 +41,29 @@
 .read-the-docs {
   color: #888;
 }
+
+.simpan-btn {
+  background: #27ae60;      /* hijau */
+  color: #fff;              /* teks putih */
+  border: none;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.simpan-btn:hover {
+  background: #219150;      /* hijau lebih gelap saat hover */
+}
+
+.alamat-row {
+  display: flex;
+  align-items: center;      /* sejajarkan vertikal tengah */
+  gap: 16px;                /* jarak horizontal antara textarea dan tombol */
+}
+
+/* Jika textarea terlalu tinggi, bisa atur tingginya */
+.alamat-row textarea {
+  min-height: 48px;
+  font-size: 1rem;
+}
