@@ -76,7 +76,12 @@ export default function Checkout() {
   
   const handleBeli = async () => {
     if (!alamat.trim()) {
-      setAlamatError("Silakan isi alamat pengiriman terlebih dahulu!");
+      Swal.fire({
+        icon: 'warning',
+        title: 'Alamat kosong',
+        text: 'Tolong isi alamat terlebih dahulu!',
+        confirmButtonColor: '#6BA368',
+      });
       return;
     }
     setAlamatError(""); // reset error jika sudah diisi
@@ -158,9 +163,9 @@ export default function Checkout() {
                 <div style={{ fontWeight: 700, fontSize: 24, color: '#5B4036', marginBottom: 8 }}>ALAMAT PENGIRIMAN</div>
                 {editAlamat ? (
                   <>
-                    <div className="alamat-row">
-                      <textarea value={alamat} onChange={handleAlamatChange} />
-                      <button onClick={handleAlamatSave} className="simpan-btn">Simpan</button>
+                    <div className="alamat-row" style={{ display: 'flex', alignItems: 'flex-end', gap: 12 }}>
+                      <textarea value={alamat} onChange={handleAlamatChange} style={{ background: '#fff', color: '#5B4036' }} />
+                      <button onClick={handleAlamatSave} className="simpan-btn" style={{ background: '#6BA368', color: '#fff', fontWeight: 700, fontSize: 16, border: 'none', borderRadius: 8, padding: '10px 18px', cursor: 'pointer', height: 40 }}>Simpan</button>
                     </div>
                     {alamatError && (
                       <div style={{ color: "#e74c3c", marginTop: "4px", display: "flex", alignItems: "center" }}>
@@ -172,7 +177,10 @@ export default function Checkout() {
                 ) : (
                   <>
                     <div style={{ color: '#5B4036', fontSize: 20 }}>{alamat}</div>
-                    <button onClick={() => setEditAlamat(true)}>Ubah Alamat</button>
+                    <button
+                      onClick={() => setEditAlamat(true)}
+                      style={{ background: '#6BA368', color: '#fff', fontWeight: 700, fontSize: 16, border: 'none', borderRadius: 8, padding: '10px 18px', cursor: 'pointer', marginTop: 12 }}
+                    >Ubah Alamat</button>
                   </>
                 )}
               </div>
